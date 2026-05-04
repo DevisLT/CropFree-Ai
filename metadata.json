@@ -1,0 +1,6 @@
+{
+  "name": "CropFree AI",
+  "description": "Premium AI-powered agritech platform for crop disease detection, recovery tracking, and smart farming guidance.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["AI Crop Diagnosis", "Recovery Tracking", "Smart Farming Coach", "Weather Intelligence"]
+}

@@ -1,0 +1,147 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- PRIMITIVES ---
+    function isSignedIn() { return request.auth != null; }
+    function isVerified() { return isSignedIn() && request.auth.token.email_verified == true; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    
+    // Auth tokens never contain custom claims in this environment.
+    // Explicitly look up roles if admin logic is needed.
+    function isAdmin() { return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+
+    // --- COLLECTIONS ---
+
+    // 🔐 USERS COLLECTION
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidUser(incoming())
+                    && (
+                      // Action: Profile Update
+                      incoming().diff(existing()).affectedKeys().hasOnly(['fullName', 'language', 'updatedAt'])
+                    );
+
+      function isValidUser(data) {
+        return data.keys().hasAll(['uid', 'email', 'subscriptionStatus'])
+          && data.uid == request.auth.uid
+          && data.email is string && data.email.size() <= 200
+          && (data.fullName == null || (data.fullName is string && data.fullName.size() <= 100))
+          && data.subscriptionStatus in ['trial', 'active', 'expired', 'cancelled']
+          && (data.trialStartDate == null || data.trialStartDate is string)
+          && (data.trialEndDate == null || data.trialEndDate is string)
+          && (data.language == null || (data.language is string && data.language.size() <= 10))
+          && data.keys().size() <= 12;
+      }
+    }
+
+    // 🌱 CROPS COLLECTION
+    match /crops/{cropId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isVerified() && isValidCrop(incoming())
+                    && incoming().userId == request.auth.uid
+                    && isValidId(cropId);
+      allow update: if isVerified() && isOwner(existing().userId) && isValidCrop(incoming())
+                    && incoming().userId == existing().userId
+                    && incoming().createdAt == existing().createdAt
+                    && (
+                      // Action: Progress Update
+                      incoming().diff(existing()).affectedKeys().hasOnly(['status', 'progress', 'updatedAt'])
+                      || 
+                      // Action: Rename
+                      incoming().diff(existing()).affectedKeys().hasOnly(['name', 'updatedAt'])
+                    );
+      allow delete: if isSignedIn() && isOwner(existing().userId);
+
+      function isValidCrop(data) {
+        return data.userId == request.auth.uid
+          && data.name is string && data.name.size() <= 100
+          && data.disease is string && data.disease.size() <= 100
+          && data.status is string && data.status.size() <= 50
+          && data.progress is number && data.progress >= 0 && data.progress <= 100
+          && data.keys().size() <= 15;
+      }
+    }
+
+    // 📸 DIAGNOSES COLLECTION
+    match /diagnoses/{diagnosisId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isVerified() && isValidDiagnosis(incoming())
+                    && incoming().userId == request.auth.uid
+                    && isValidId(diagnosisId);
+
+      function isValidDiagnosis(data) {
+        return data.userId == request.auth.uid
+          && data.cropName is string && data.cropName.size() <= 100
+          && data.mostLikelyDiagnosis is string && data.mostLikelyDiagnosis.size() <= 100
+          && data.confidenceLevel in ['High', 'Medium', 'Low']
+          && data.severity in ['Low', 'Moderate', 'High', 'Critical']
+          && (data.interpretation is string && data.interpretation.size() <= 2000)
+          && (data.explanation is string && data.explanation.size() <= 2000)
+          && (data.confidenceScore is number)
+          && (data.observedSymptoms is list && data.observedSymptoms.size() <= 20)
+          && (data.possibleConditions is list && data.possibleConditions.size() <= 10)
+          && (data.recommendedActions is list && data.recommendedActions.size() <= 10)
+          && (data.preventionTips is list && data.preventionTips.size() <= 10)
+          && data.keys().size() <= 25;
+      }
+    }
+
+    // ✅ TASKS COLLECTION
+    match /tasks/{taskId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isVerified() && isValidTask(incoming())
+                    && incoming().userId == request.auth.uid
+                    && isValidId(taskId);
+      allow update: if isVerified() && isOwner(existing().userId) && isValidTask(incoming())
+                    && incoming().userId == existing().userId
+                    && incoming().diff(existing()).affectedKeys().hasOnly(['completed', 'updatedAt']);
+      allow delete: if isVerified() && isOwner(existing().userId);
+
+      function isValidTask(data) {
+        return data.userId == request.auth.uid
+          && data.description is string && data.description.size() <= 500
+          && data.completed is bool
+          && data.keys().size() <= 10;
+      }
+    }
+
+    // 💬 CHATS COLLECTION
+    match /chats/{chatId} {
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isVerified() && isValidChat(incoming())
+                    && incoming().userId == request.auth.uid
+                    && isValidId(chatId);
+
+      function isValidChat(data) {
+        return data.userId == request.auth.uid
+          && data.role in ['user', 'model']
+          && data.content is string && data.content.size() <= 2000
+          && data.keys().size() <= 5;
+      }
+    }
+
+    // 🌦️ WEATHER CACHE (Public read)
+    match /weather/{docId} {
+      allow read: if isSignedIn();
+    }
+
+    // 📚 GUIDANCE CONTENT (Public read)
+    match /guidance/{docId} {
+      allow read: if isSignedIn();
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile with subscription and account details.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "email": { "type": "string" },
+        "trialStartDate": { "type": "string", "format": "date-time" },
+        "trialEndDate": { "type": "string", "format": "date-time" },
+        "subscriptionStatus": { "type": "string", "enum": ["trial", "active", "expired", "cancelled"] },
+        "language": { "type": "string" }
+      },
+      "required": ["uid", "email", "subscriptionStatus"]
+    },
+    "Diagnosis": {
+      "title": "Diagnosis",
+      "description": "Result of an AI crop analysis.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "cropName": { "type": "string" },
+        "interpretation": { "type": "string" },
+        "observedSymptoms": { "type": "array", "items": { "type": "string" } },
+        "possibleConditions": { "type": "array", "items": { "type": "string" } },
+        "mostLikelyDiagnosis": { "type": "string" },
+        "confidenceLevel": { "type": "string", "enum": ["High", "Medium", "Low"] },
+        "confidenceScore": { "type": "number" },
+        "severity": { "type": "string", "enum": ["Low", "Moderate", "High", "Critical"] },
+        "explanation": { "type": "string" },
+        "recommendedActions": { "type": "array", "items": { "type": "string" } },
+        "preventionTips": { "type": "array", "items": { "type": "string" } },
+        "imageUrl": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "mostLikelyDiagnosis", "createdAt"]
+    },
+    "Crop": {
+      "title": "Crop",
+      "description": "A crop being tracked in the recovery journal.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "disease": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "status": { "type": "string" },
+        "progress": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "disease", "createdAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "A recovery task for a specific crop.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "cropId": { "type": "string" },
+        "description": { "type": "string" },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "cropId", "description"]
+    },
+    "ChatContent": {
+      "title": "ChatContent",
+      "description": "A message in the AI farming coach chat.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "model"] },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "role", "content"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Stores user profile data."
+    },
+    "/diagnoses/{diagnosisId}": {
+      "schema": "Diagnosis",
+      "description": "Stores AI analysis results."
+    },
+    "/crops/{cropId}": {
+      "schema": "Crop",
+      "description": "Stores crops being tracked for recovery."
+    },
+    "/tasks/{taskId}": {
+      "schema": "Task",
+      "description": "Stores tasks related to crop recovery."
+    },
+    "/chats/{chatId}": {
+      "schema": "ChatContent",
+      "description": "Stores AI coach chat history."
+    }
+  }
+}
