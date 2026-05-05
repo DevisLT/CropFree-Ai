@@ -20,6 +20,30 @@ async function startServer() {
     res.json({ status: "ok" });
   });
 
+  app.get("/api/weather", async (req, res) => {
+    const apiKey = process.env.WEATHER_API_KEY;
+    const city = req.query.city || "Kigali";
+
+    if (!apiKey) {
+      return res.status(500).json({ error: "Weather API key not configured" });
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=5&aqi=no&alerts=no`
+      );
+      
+      if (!response.ok) {
+        throw new Error(`Weather API responded with status ${response.status}`);
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Stripe Checkout Session
   app.post("/api/create-checkout-session", async (req, res) => {
     if (!stripe) {
