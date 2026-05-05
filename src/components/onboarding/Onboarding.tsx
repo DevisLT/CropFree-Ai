@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Leaf, Shield, Zap, CloudOff, ArrowRight, CheckCircle, Sparkles, Globe } from "lucide-react";
+import { Leaf, Shield, Zap, CloudOff, ArrowRight, CheckCircle, Sparkles, Globe, Activity, Camera } from "lucide-react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../lib/firebase";
 
@@ -18,139 +18,163 @@ export default function Onboarding() {
   const next = () => setStep(s => Math.min(s + 1, 3));
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#FCFAF7] grain">
-      {/* Background blobs for depth */}
-      <div className="absolute top-[-15%] right-[-5%] w-[50%] h-[50%] bg-emerald-100/30 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand/5 rounded-full blur-[100px]" />
+    <div className="h-screen w-screen flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-white text-slate-900">
+      {/* Background Image Container */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2664&auto=format&fit=crop" 
+          className="w-full h-full object-cover"
+          alt="Agriculture Field"
+        />
+        <div className="absolute inset-0 bg-white/30 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent md:bg-gradient-to-r md:from-white md:via-white/70 md:to-transparent" />
+      </div>
 
-      <AnimatePresence mode="wait">
-        {step < 3 ? (
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, y: 40, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            exit={{ opacity: 0, y: -40, filter: "blur(10px)" }}
-            transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-            className="max-w-xl w-full glass p-16 text-center rounded-[60px] shadow-2xl relative overflow-hidden"
-          >
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 to-indigo-500 opacity-20" />
-            
-            {step === 0 && (
-              <div className="space-y-10">
-                <div className="w-24 h-24 bg-neutral-900 rounded-[32px] flex items-center justify-center mx-auto shadow-2xl rotate-3 group hover:rotate-0 transition-transform duration-500">
-                  <Leaf className="text-emerald-400 w-12 h-12" />
+      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        {/* Left Content - Hero Branding */}
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+          className="hidden lg:block space-y-10"
+        >
+          <div className="flex items-center gap-4">
+             <div className="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center shadow-2xl shadow-brand/20">
+                <Leaf className="text-white w-10 h-10" />
+             </div>
+             <div>
+                <h1 className="text-5xl font-black text-slate-950 tracking-tighter">CropFree.</h1>
+                <p className="text-brand font-black uppercase tracking-[0.3em] text-[10px]">Precision Intelligence</p>
+             </div>
+          </div>
+          <h2 className="text-7xl font-black text-slate-950 leading-[1.05] tracking-tighter max-w-lg text-balance">
+            Empowering your <span className="text-brand">Harvest.</span>
+          </h2>
+          <p className="text-slate-600 text-xl max-w-md leading-relaxed font-medium">
+            Instantly diagnose diseases, track recovery metrics, and protect your yields with our advanced AI companion.
+          </p>
+          <div className="flex items-center gap-10 pt-4">
+             <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black text-slate-950">98%</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Accuracy Rate</span>
+             </div>
+             <div className="w-px h-12 bg-slate-200" />
+             <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black text-slate-950">24/7</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Global Support</span>
+             </div>
+          </div>
+        </motion.div>
+
+        {/* Right Content - Onboarding Card */}
+        <AnimatePresence mode="wait">
+          {step < 3 ? (
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -40, scale: 0.95 }}
+              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-14 text-center md:text-left rounded-[48px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white"
+            >
+              <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
+                <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center">
+                  <Leaf className="text-white w-6 h-6" />
                 </div>
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.6em] text-brand mb-4 block">Agricultural Intelligence</span>
-                  <h1 className="text-6xl font-black mb-6 tracking-tighter leading-none">CropFree.</h1>
-                  <p className="text-neutral-500 text-xl font-medium leading-relaxed italic max-w-sm mx-auto">
-                    "Bridging the gap between ancient wisdom and artificial intelligence."
+                <h1 className="text-3xl font-black text-slate-950 tracking-tighter">CropFree.</h1>
+              </div>
+
+              {step === 0 && (
+                <div className="space-y-6">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand mb-4 block">01 / The Mission</span>
+                  <h2 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter leading-none">Guardians of the Soil.</h2>
+                  <p className="text-slate-500 text-lg font-medium leading-relaxed">
+                    "We bridge the gap between ancient agricultural wisdom and next-generation diagnostic tools."
                   </p>
                 </div>
-              </div>
-            )}
+              )}
 
-            {step === 1 && (
-              <div className="space-y-10">
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-emerald-600 mb-2 block">Our Methodology</span>
-                  <h2 className="text-4xl font-black tracking-tighter">How we heal.</h2>
-                </div>
-                <div className="space-y-6 text-left max-w-sm mx-auto">
-                  {[
-                    { text: "Snap a high-fidelity photo", sub: "Identify symptoms in 500ms" },
-                    { text: "AI Diagnostic matching", sub: "Compared against 10M datasets" },
-                    { text: "Dynamic treatment plans", sub: "Step-by-step restoration guides" },
-                    { text: "Recovery monitoring", sub: "Watch your yield grow back" }
-                  ].map((item, i) => (
-                    <motion.div 
-                      key={i} 
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="flex items-start gap-4 p-4 bg-white/40 rounded-2xl border border-white hover:bg-white/80 transition-colors group"
-                    >
-                      <div className="w-8 h-8 bg-neutral-900 text-white rounded-xl flex items-center justify-center font-black text-xs flex-shrink-0">
-                        {i + 1}
-                      </div>
-                      <div>
-                        <p className="font-black text-neutral-900 tracking-tight">{item.text}</p>
-                        <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">{item.sub}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div className="space-y-10">
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand mb-2 block">Standard of Excellence</span>
-                  <h2 className="text-4xl font-black tracking-tighter">Trusted worldwide.</h2>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-8 bg-white/60 backdrop-blur-md rounded-[32px] border border-white text-center shadow-lg hover:translate-y-[-4px] transition-transform">
-                    <Sparkles className="w-10 h-10 text-brand mx-auto mb-4" />
-                    <span className="text-xs font-black uppercase tracking-widest text-neutral-800">Precision AI</span>
-                  </div>
-                  <div className="p-8 bg-emerald-50 rounded-[32px] border border-emerald-100 text-center shadow-lg hover:translate-y-[-4px] transition-transform">
-                    <Globe className="w-10 h-10 text-emerald-600 mx-auto mb-4" />
-                    <span className="text-xs font-black uppercase tracking-widest text-emerald-800">Global Reach</span>
-                  </div>
-                  <div className="p-10 bg-neutral-900 rounded-[40px] text-center col-span-2 shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl" />
-                    <CheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                    <h4 className="text-white text-xl font-black tracking-tight mb-2">Maximum Yield. Zero Loss.</h4>
-                    <p className="text-white/40 text-xs font-bold uppercase tracking-widest italic">The ultimate farming companion.</p>
+              {step === 1 && (
+                <div className="space-y-6">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand mb-4 block">02 / Innovation</span>
+                  <h2 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter leading-none">Guided Restoration.</h2>
+                  <div className="grid grid-cols-1 gap-4 pt-4">
+                     {[
+                       { icon: Camera, title: "Diagnostic Scan", sub: "Identify symptoms in 500ms" },
+                       { icon: Activity, title: "Recovery Journal", sub: "Step-by-step healing protocols" }
+                     ].map((item, i) => (
+                       <div key={i} className="flex items-center gap-5 p-5 bg-slate-50 rounded-[28px] border border-slate-100 group hover:border-brand/30 transition-colors">
+                          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                             <item.icon className="w-7 h-7 text-brand" />
+                          </div>
+                          <div>
+                            <p className="font-black text-slate-950 leading-none mb-1 text-lg">{item.title}</p>
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.sub}</p>
+                          </div>
+                       </div>
+                     ))}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <button
-              onClick={next}
-              className="mt-12 w-full py-6 bg-neutral-900 text-white rounded-[28px] font-black shadow-2xl shadow-neutral-900/10 flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-[0.98] transition-all group btn-press uppercase tracking-[0.2em] text-sm"
+              {step === 2 && (
+                <div className="space-y-6">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand mb-4 block">03 / Reliability</span>
+                  <h2 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter leading-none">Global Standard.</h2>
+                  <div className="p-8 bg-slate-950 rounded-[40px] text-white relative overflow-hidden group shadow-2xl">
+                     <div className="absolute top-0 right-0 w-32 h-32 bg-brand/10 rounded-full blur-3xl group-hover:scale-125 transition-transform" />
+                     <Sparkles className="text-brand w-12 h-12 mb-4" />
+                     <p className="text-xl font-black mb-2">Sustainable Ecosystems</p>
+                     <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed">Helping farmers protect biodiversity while maximizing output safely.</p>
+                  </div>
+                </div>
+              )}
+
+              <button
+                onClick={next}
+                className="mt-12 w-full py-6 bg-slate-950 text-white rounded-[24px] font-black shadow-2xl shadow-slate-950/20 flex items-center justify-center gap-4 hover:bg-brand transition-all group btn-press text-xs uppercase tracking-[0.2em]"
+              >
+                Continue Journey <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+              </button>
+
+              <div className="mt-10 flex justify-between items-center px-4">
+                 <div className="flex gap-2">
+                    {[0, 1, 2].map(i => (
+                      <div key={i} className={`h-1.5 rounded-full transition-all duration-700 ${step === i ? "w-10 bg-brand" : "w-1.5 bg-slate-100"}`} />
+                    ))}
+                 </div>
+                 <button onClick={() => setStep(3)} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors">Skip</button>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="auth"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-16 text-center rounded-[48px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white"
             >
-              Continue Journey <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-            </button>
-
-            {/* Pagination dots */}
-            <div className="mt-8 flex justify-center gap-2">
-              {[0, 1, 2].map(i => (
-                <div key={i} className={`h-1.5 rounded-full transition-all duration-500 ${step === i ? "w-8 bg-brand" : "w-1.5 bg-neutral-200"}`} />
-              ))}
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="auth"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="max-w-xl w-full glass p-20 text-center rounded-[60px] shadow-2xl relative overflow-hidden"
-          >
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-emerald-400 to-indigo-500 opacity-20" />
-            <div className="w-20 h-20 bg-emerald-50 rounded-[30px] flex items-center justify-center mx-auto mb-10 shadow-inner">
-               <Shield className="w-10 h-10 text-emerald-600" />
-            </div>
-            <h2 className="text-5xl font-black mb-4 tracking-tighter">Your field, secured.</h2>
-            <p className="text-neutral-500 text-lg font-medium mb-12 italic leading-relaxed">
-              "Create your secure identity as a CropFree farmer and activate your complimentary <span className="text-brand font-black">60-day full-access trial</span>."
-            </p>
-            
-            <button
-              onClick={handleLogin}
-              className="w-full py-5 bg-white border-2 border-neutral-100 rounded-[28px] font-black flex items-center justify-center gap-4 hover:border-brand transition-all mb-6 group btn-press shadow-xl"
-            >
-              <img src="https://www.google.com/favicon.ico" className="w-6 h-6 group-hover:scale-125 transition-transform" alt="Google" />
-              Sign in with Google
-            </button>
-            <p className="text-[10px] font-black text-neutral-400 uppercase tracking-widest max-w-xs mx-auto">
-              By proceeding, you agree to our <span className="text-neutral-900 underline underline-offset-4 cursor-pointer">Protocol terms</span> & <span className="text-neutral-900 underline underline-offset-4 cursor-pointer">Privacy data handling</span>.
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div className="w-20 h-20 bg-slate-50 rounded-[28px] flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-100 rotate-3">
+                 <Shield className="w-10 h-10 text-brand" />
+              </div>
+              <h2 className="text-5xl font-black text-slate-950 mb-4 tracking-tighter">Secure Field.</h2>
+              <p className="text-slate-500 text-lg font-medium mb-12 leading-relaxed max-w-xs mx-auto">
+                Protect your farm data. Verify your identity to unlock personalized monitoring and <span className="text-brand font-black">60 days of premium access.</span>
+              </p>
+              
+              <button
+                onClick={handleLogin}
+                className="w-full py-5 bg-white border-2 border-slate-100 rounded-[24px] font-black text-slate-950 flex items-center justify-center gap-4 hover:border-brand transition-all mb-8 group btn-press shadow-xl"
+              >
+                <img src="https://www.google.com/favicon.ico" className="w-6 h-6 group-hover:scale-125 transition-transform" alt="Google" />
+                Sign in with Google
+              </button>
+              
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+                By entered field, you agree to our <span className="text-slate-950 underline underline-offset-4 cursor-pointer">Terms</span> & <span className="text-slate-950 underline underline-offset-4 cursor-pointer">Privacy</span>.
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

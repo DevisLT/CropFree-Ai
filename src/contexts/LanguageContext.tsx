@@ -68,7 +68,9 @@ const translations: Record<Locale, Record<string, string>> = {
     ready_opinion: "Ready for an expert opinion? Our AI is standing by.",
     capture_photo_tip: "Capture a clear photo of the leaves or stem. We'll identify any issues in seconds.",
     confirm_analyze: "Confirm & Analyze",
-    identifying_patterns: "\"Identifying patterns invisible to the human eye. Almost there.\""
+    identifying_patterns: "\"Identifying patterns invisible to the human eye. Almost there.\"",
+    save_diagnosis: "Save Diagnosis to History",
+    diagnosis_saved: "Diagnosis saved to history."
   },
   fr: {
     dashboard: "Tableau de Bord",

@@ -153,9 +153,9 @@ export default function AICoach() {
                <button 
                  onClick={handleSend}
                  disabled={!input.trim() || isTyping}
-                 className="p-3 md:p-4 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-xl md:rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:scale-100 border border-neutral-700 dark:border-white"
+                 className="p-3 md:p-5 bg-slate-950 text-white rounded-2xl shadow-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-30 disabled:scale-100 border border-slate-700"
                >
-                  <Send className={`w-4 h-4 md:w-5 md:h-5 ${isRTL ? 'rotate-180 text-brand' : 'text-emerald-400'}`} />
+                  <Send className={`w-4 h-4 md:w-5 md:h-5 ${isRTL ? 'rotate-180 text-brand' : 'text-brand'}`} />
                </button>
             </div>
          </div>

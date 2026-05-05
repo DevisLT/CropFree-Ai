@@ -52,7 +52,7 @@ const Logo = () => (
     </div>
     <div className="flex flex-col">
       <span className="text-xl font-black tracking-tighter leading-none text-neutral-900 group-hover:text-brand transition-colors">
-        CropFree <span className="opacity-60 font-medium italic">AI</span>
+        CropFree <span className="opacity-60 font-medium">AI</span>
       </span>
       <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 mt-0.5">Agriculture Intelligence</span>
     </div>
@@ -168,7 +168,7 @@ export default function MainShell() {
   };
 
   return (
-    <div className={`flex h-screen bg-[#FCFAF7] dark:bg-neutral-950 overflow-hidden font-sans grain relative ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div className={`flex h-screen bg-[#F8FAFC] overflow-hidden font-sans grain relative ${isRTL ? 'rtl' : 'ltr'}`}>
       {/* Mobile Sidebar Overlay */}
       {isMobile && isSidebarOpen && (
         <motion.div 
@@ -209,14 +209,14 @@ export default function MainShell() {
                 setActiveTab(item.id as Tab);
                 if (isMobile) setIsSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-[22px] transition-all duration-300 group ${
+              className={`w-full flex items-center gap-5 px-5 py-4 rounded-[26px] transition-all duration-500 group ${
                 activeTab === item.id 
-                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-xl shadow-neutral-900/10" 
-                  : "text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-white"
+                  ? "bg-slate-950 text-white shadow-2xl shadow-slate-900/20" 
+                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-950"
               }`}
             >
-              <item.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${activeTab === item.id ? "text-brand" : ""}`} />
-              <span className={`font-semibold tracking-tight ${activeTab === item.id ? "translate-x-1" : ""} transition-transform`}>
+              <item.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${activeTab === item.id ? "text-brand" : "text-slate-300"}`} />
+              <span className={`font-black text-sm tracking-tight ${activeTab === item.id ? "translate-x-1" : ""} transition-transform`}>
                 {item.label}
               </span>
             </button>

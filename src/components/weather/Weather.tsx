@@ -1,7 +1,9 @@
 import React from "react";
-import { Cloud, Thermometer, Droplets, Wind, Sun, CloudRain, SunMedium, Navigation } from "lucide-react";
+import { Cloud, Thermometer, Droplets, Wind, Sun, CloudRain, SunMedium, Navigation, Leaf } from "lucide-react";
+import { useLanguage } from "../../contexts/LanguageContext";
 
 export default function Weather() {
+  const { t } = useLanguage();
   const current = { temp: 24, high: 28, low: 18, hum: 65, wind: 12, cond: "Partly Cloudy" };
   
   const forecast = [
@@ -15,77 +17,81 @@ export default function Weather() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 md:space-y-8 py-4 md:py-8 px-2 md:px-0">
       {/* City Hero */}
-      <div className="premium-card p-6 md:p-12 bg-gradient-to-br from-indigo-600 via-brand to-indigo-800 text-white relative overflow-hidden">
-         <div className="absolute top-[-50%] right-[-10%] w-[80%] h-[150%] bg-white/10 rounded-full blur-[100px] rotate-[-20deg]" />
+      <div className="premium-card p-10 md:p-16 bg-slate-950 text-white relative overflow-hidden border-none shadow-2xl shadow-slate-950/20">
+         <div className="absolute top-0 right-0 w-[60%] h-full bg-brand/10 rounded-full blur-[100px]" />
          
-         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12">
+         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-12">
             <div className="text-center md:text-left">
-               <div className="flex items-center justify-center md:justify-start gap-2 text-white/70 mb-4">
-                  <Navigation className="w-4 h-4 fill-white/70" />
-                  <span className="text-xs md:text-sm font-bold uppercase tracking-widest">Kigali, Rwanda</span>
+               <div className="flex items-center justify-center md:justify-start gap-3 text-white/40 mb-6 uppercase tracking-[0.3em] font-black text-[10px]">
+                  <Navigation className="w-4 h-4 fill-brand stroke-brand" />
+                  Kigali, Rwanda
                </div>
-               <h2 className="text-6xl md:text-8xl font-black mb-2 leading-none tracking-tighter">24°</h2>
-               <p className="text-xl md:text-2xl font-medium text-white/80">{current.cond}</p>
+               <div className="flex items-baseline justify-center md:justify-start gap-4 mb-4">
+                  <h2 className="text-8xl md:text-[10rem] font-black leading-none tracking-tighter">24°</h2>
+                  <span className="text-xl md:text-2xl font-bold text-white/40">C</span>
+               </div>
+               <p className="text-2xl md:text-3xl font-black text-brand">{current.cond}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 md:gap-8 text-neutral-100">
-               <div className="space-y-1">
-                  <div className="flex items-center gap-2 opacity-60">
-                     <Thermometer className="w-4 h-4" />
-                     <span className="text-xs font-bold uppercase tracking-widest">High / Low</span>
+            <div className="grid grid-cols-2 gap-10 md:gap-14 border-t md:border-t-0 md:border-l border-white/10 pt-10 md:pt-0 md:pl-14">
+               <div className="space-y-2">
+                  <div className="flex items-center gap-3 text-white/30 uppercase tracking-widest font-black text-[9px]">
+                     <Thermometer className="w-3 h-3" />
+                     Extreme
                   </div>
-                  <p className="text-xl font-bold">{current.high}° / {current.low}°</p>
+                  <p className="text-3xl font-black">{current.high}° <span className="opacity-30">/ {current.low}°</span></p>
                </div>
-               <div className="space-y-1">
-                  <div className="flex items-center gap-2 opacity-60">
-                     <Droplets className="w-4 h-4" />
-                     <span className="text-xs font-bold uppercase tracking-widest">Humidity</span>
+               <div className="space-y-2">
+                  <div className="flex items-center gap-3 text-white/30 uppercase tracking-widest font-black text-[9px]">
+                     <Droplets className="w-3 h-3" />
+                     Humidity
                   </div>
-                  <p className="text-xl font-bold">{current.hum}%</p>
+                  <p className="text-3xl font-black">{current.hum}%</p>
                </div>
-               <div className="space-y-1">
-                  <div className="flex items-center gap-2 opacity-60">
-                     <Wind className="w-4 h-4" />
-                     <span className="text-xs font-bold uppercase tracking-widest">Wind Speed</span>
+               <div className="space-y-2">
+                  <div className="flex items-center gap-3 text-white/30 uppercase tracking-widest font-black text-[9px]">
+                     <Wind className="w-3 h-3" />
+                     Wind
                   </div>
-                  <p className="text-xl font-bold">{current.wind} km/h</p>
+                  <p className="text-3xl font-black">{current.wind} <span className="text-xs uppercase opacity-30">km/h</span></p>
                </div>
-               <div className="space-y-1">
-                  <div className="flex items-center gap-2 opacity-60">
-                     <CloudRain className="w-4 h-4" />
-                     <span className="text-xs font-bold uppercase tracking-widest">Rain Chance</span>
+               <div className="space-y-2">
+                  <div className="flex items-center gap-3 text-white/30 uppercase tracking-widest font-black text-[9px]">
+                     <CloudRain className="w-3 h-3" />
+                     Chance
                   </div>
-                  <p className="text-xl font-bold">15%</p>
+                  <p className="text-3xl font-black">15%</p>
                </div>
             </div>
          </div>
       </div>
 
       {/* Advice Card */}
-      <div className="premium-card p-6 md:p-8 bg-green-50 border-green-100 flex flex-col sm:flex-row items-center sm:items-start gap-4 md:gap-6">
-         <div className="w-12 h-12 md:w-16 md:h-16 bg-green-500 rounded-xl md:rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-green-500/20">
-            <Leaf className="text-white w-6 h-6 md:w-8 md:h-8" />
+      <div className="premium-card p-10 bg-white border-brand/20 flex flex-col md:flex-row items-center md:items-start gap-8 shadow-xl">
+         <div className="w-20 h-20 bg-brand/10 rounded-[32px] flex items-center justify-center flex-shrink-0">
+            <Leaf className="text-brand w-10 h-10" />
          </div>
-         <div className="text-center sm:text-left">
-            <h4 className="text-lg md:text-xl font-bold text-green-900 mb-1">Farming Advice</h4>
-            <p className="text-sm md:text-base text-green-700 leading-relaxed">
-               Optimal conditions for irrigation. Soil moisture is currently stable. We recommend applying fertilizer before the expected rainfall on Wednesday.
+         <div className="text-center md:text-left flex-1 space-y-2">
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand">{t('farming_advice') || 'Biometric Intel'}</span>
+            <h4 className="text-3xl font-black text-slate-950 tracking-tighter">Optimal Irrigation Window</h4>
+            <p className="text-lg font-medium text-slate-500 leading-relaxed">
+               Current soil moisture saturation is at 62%. We recommend deferring irrigation until the predicted precipitation event on Wednesday to prevent root asphyxiation.
             </p>
          </div>
       </div>
 
       {/* Forecast */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
          {forecast.map((f, i) => (
-           <div key={i} className={`premium-card p-4 md:p-6 text-center hover:scale-105 transition-transform cursor-pointer ${i === 4 ? 'col-span-2 sm:col-span-1' : ''}`}>
-              <p className="text-[10px] md:text-xs font-bold text-neutral-400 mb-2 md:mb-4">{f.day}</p>
-              <f.icon className="w-8 h-8 md:w-10 md:h-10 mx-auto mb-3 md:mb-4 text-brand" />
-              <p className="text-xl md:text-2xl font-black">{f.temp}°</p>
+           <div key={i} className="premium-card p-10 text-center hover:scale-105 transition-all cursor-pointer bg-white group border-none shadow-premium">
+              <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-6">{f.day}</p>
+              <div className="w-20 h-20 bg-slate-50 rounded-[32px] flex items-center justify-center mx-auto mb-6 group-hover:bg-brand/10 transition-colors">
+                <f.icon className="w-10 h-10 text-slate-300 group-hover:text-brand transition-colors" />
+              </div>
+              <p className="text-4xl font-black text-slate-950">{f.temp}°</p>
            </div>
          ))}
       </div>
     </div>
   );
 }
-
-function Leaf(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.4 19 2c1 2 2 3.5 1.1 7.9A7 7 0 0 1 11 20Z"/><path d="M19 2c-5 2-6 3-10 10"/></svg>; }

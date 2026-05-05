@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, doc, getDocFromServer } from "firebase/firestore";
+import { initializeFirestore, doc, getDocFromServer } from "firebase/firestore";
 import firebaseConfig from "../../firebase-applet-config.json";
 
 // Validate Firebase configuration
@@ -11,8 +11,11 @@ if (!firebaseConfig.apiKey || !firebaseConfig.projectId || !firebaseConfig.appId
 console.log("Initializing Firebase...");
 const app = initializeApp(firebaseConfig);
 
-console.log("Connecting to Firestore...");
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+console.log("Connecting to Firestore (Long Polling)...");
+export const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true,
+}, firebaseConfig.firestoreDatabaseId);
+
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 

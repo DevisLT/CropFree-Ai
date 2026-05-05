@@ -7,12 +7,15 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { OperationType, handleFirestoreError } from "../../lib/errorHandlers";
 import { useLanguage } from "../../contexts/LanguageContext";
 
+import toast from "react-hot-toast";
+
 export default function CropDoctor() {
   const { t, locale, isRTL } = useLanguage();
   const [image, setImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<CropDiagnosis | null>(null);
   const [showGuided, setShowGuided] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,18 +36,6 @@ export default function CropDoctor() {
     try {
       const diagnosis = await aiService.diagnoseCrop(image, "image/jpeg", locale);
       setResult(diagnosis);
-      
-      const path = "diagnoses";
-      try {
-        await addDoc(collection(db, path), {
-          ...diagnosis,
-          userId: auth.currentUser?.uid,
-          imageUrl: image,
-          createdAt: serverTimestamp(),
-        });
-      } catch (error) {
-        handleFirestoreError(error, OperationType.CREATE, path, auth);
-      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -52,22 +43,73 @@ export default function CropDoctor() {
     }
   };
 
+  const saveDiagnosisToHistory = async () => {
+    if (!result || !image || isSaving) return;
+    setIsSaving(true);
+    const path = "diagnoses";
+    try {
+      await addDoc(collection(db, path), {
+        ...result,
+        userId: auth.currentUser?.uid,
+        imageUrl: image,
+        createdAt: serverTimestamp(),
+      });
+      toast.success(t("diagnosis_saved") || "Diagnosis saved to history.");
+      setResult(null);
+      setImage(null);
+    } catch (error) {
+      handleFirestoreError(error, OperationType.CREATE, path, auth);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const saveToTracker = async () => {
-    if (!result || !image) return;
+    if (!result || !image || isSaving) return;
+    setIsSaving(true);
+    
+    // Check for existing crop with same name and diagnosis recently
+    // Simplified: check if user already clicked/saved in this session
+    // For a real app, I'd query Firestore to see if this same scan was already saved.
+    
     const path = "crops";
     try {
+      const defaultPractices = [
+        "Consistent Moisture Regulation",
+        "Strategic Pruning of Affected Areas",
+        "Bio-Nutrient Supplementation",
+        "Soil PH Optimization",
+        "Protective Mulching Protocol"
+      ];
+
+      const recoverySteps = [
+        ...result.recommendedActions.map(text => ({ text, type: "directive" })),
+        ...defaultPractices.map(text => ({ text, type: "practice" }))
+      ].map(step => ({
+        ...step,
+        completed: false,
+        completedAt: null
+      }));
+
       await addDoc(collection(db, path), {
         userId: auth.currentUser?.uid,
         name: result.cropName,
         disease: result.mostLikelyDiagnosis,
         imageUrl: image,
-        status: "Stable",
+        status: "Inspecting",
         progress: 0,
+        recoverySteps: recoverySteps,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
+      
+      toast.success(t("crop_saved") || "Crop moved to recovery tracker.");
+      setResult(null);
+      setImage(null);
     } catch (error) {
        handleFirestoreError(error, OperationType.CREATE, path, auth);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -122,9 +164,9 @@ export default function CropDoctor() {
               {image && (
                 <button 
                   onClick={analyze}
-                  className="w-full py-4 md:py-5 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 rounded-[20px] md:rounded-[24px] font-black text-base md:text-lg shadow-2xl shadow-neutral-900/20 btn-press flex items-center justify-center gap-4 group"
+                  className="w-full py-5 bg-brand text-white rounded-[28px] font-black text-lg shadow-2xl shadow-brand/20 btn-press flex items-center justify-center gap-4 group"
                 >
-                  {t("confirm_analyze") || "Confirm & Analyze"} <Search className="w-5 h-5 md:w-6 md:h-6 group-hover:scale-125 transition-transform" />
+                  {t("confirm_analyze") || "Confirm & Analyze"} <Search className="w-6 h-6 group-hover:scale-125 transition-transform" />
                 </button>
               )}
             </div>
@@ -171,7 +213,7 @@ export default function CropDoctor() {
            </div>
            
            <h2 className="text-2xl md:text-4xl font-black mb-3 tracking-tighter dark:text-white">{t("scanning")}</h2>
-           <p className="text-neutral-500 font-bold text-sm md:text-lg max-w-sm mx-auto leading-relaxed italic dark:text-neutral-400">
+           <p className="text-neutral-500 font-bold text-sm md:text-lg max-w-sm mx-auto leading-relaxed dark:text-neutral-400">
              {t("identifying_patterns") || "\"Identifying patterns invisible to the human eye. Almost there.\""}
            </p>
 
@@ -225,7 +267,7 @@ export default function CropDoctor() {
                   </p>
                </div>
 
-               <p className="text-base md:text-xl font-bold text-neutral-700 leading-relaxed mb-8 md:mb-12 italic border-l-4 border-brand pl-4 md:pl-6">
+               <p className="text-base md:text-xl font-bold text-neutral-700 leading-relaxed mb-8 md:mb-12 border-l-4 border-brand pl-4 md:pl-6">
                  "{result.explanation}"
                </p>
 
@@ -270,24 +312,24 @@ export default function CropDoctor() {
                     </div>
                   </div>
 
-                  <div className="bg-neutral-900 rounded-[32px] md:rounded-[40px] p-6 md:p-10 text-white shadow-2xl relative overflow-hidden group h-fit">
+              <div className="bg-slate-950 rounded-[40px] p-8 md:p-12 text-white shadow-2xl relative overflow-hidden group h-fit">
                      <div className="absolute top-0 right-0 w-32 h-32 bg-brand/10 rounded-full blur-[60px]" />
-                     <h4 className="text-xl md:text-2xl font-black mb-6 md:mb-8 tracking-tight">Recommended Actions</h4>
-                     <div className="space-y-6 md:space-y-8 relative z-10">
+                     <h4 className="text-xl md:text-2xl font-black mb-8 tracking-tighter">Recommended Protocol</h4>
+                     <div className="space-y-6 md:space-y-10 relative z-10">
                         {result.recommendedActions.slice(0, 4).map((step, i) => (
-                          <div key={i} className="flex gap-4 md:gap-6 group">
-                             <div className="w-8 h-8 md:w-10 md:h-10 bg-white/10 text-white rounded-xl md:rounded-2xl flex items-center justify-center text-[10px] md:text-sm font-black flex-shrink-0 border border-white/10 group-hover:bg-brand group-hover:border-brand transition-all">
+                          <div key={i} className="flex gap-6 group">
+                             <div className="w-12 h-12 bg-white/10 text-white rounded-2xl flex items-center justify-center text-sm font-black flex-shrink-0 border border-white/10 group-hover:bg-brand group-hover:border-brand transition-all">
                                 {i + 1}
                              </div>
-                             <p className="text-sm md:text-base text-neutral-300 font-medium leading-relaxed group-hover:text-white transition-colors">{step}</p>
+                             <p className="text-base text-slate-300 font-medium leading-relaxed group-hover:text-white transition-colors">{step}</p>
                           </div>
                         ))}
                      </div>
                      <button 
                        onClick={() => setShowGuided(true)}
-                       className="w-full mt-8 md:mt-10 py-4 md:py-5 bg-white text-neutral-900 rounded-[18px] md:rounded-[22px] font-black flex items-center justify-center gap-3 text-xs md:text-sm hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl"
+                       className="w-full mt-12 py-5 bg-white text-slate-950 rounded-[28px] font-black flex items-center justify-center gap-3 text-xs md:text-sm hover:scale-[1.05] active:scale-[0.95] transition-all shadow-xl"
                      >
-                       Begin Recovery Guide <ArrowRight className="w-4 h-4 text-brand" />
+                       Full Recovery Roadmap <ArrowRight className="w-4 h-4 text-brand" />
                      </button>
                   </div>
                </div>
@@ -298,7 +340,7 @@ export default function CropDoctor() {
                  <div className="w-10 h-10 md:w-12 md:h-12 bg-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-sm">
                    <ShieldCheck className="w-5 h-5 md:w-6 md:h-6 text-brand" />
                  </div>
-                 <p className="text-sm md:text-base text-neutral-800 font-bold italic">{t("recovery_journal")}</p>
+                 <p className="text-sm md:text-base text-neutral-800 font-bold">{t("recovery_journal")}</p>
                </div>
                <button 
                  onClick={saveToTracker}
@@ -309,12 +351,23 @@ export default function CropDoctor() {
             </div>
           </div>
 
-          <button 
-             onClick={() => { setResult(null); setImage(null); }}
-             className="w-full py-4 md:py-6 glass border-2 border-dashed border-neutral-200 rounded-3xl md:rounded-[40px] text-neutral-400 font-black uppercase tracking-widest hover:bg-white hover:text-brand hover:border-brand/40 transition-all flex items-center justify-center gap-3 md:gap-4 text-[10px] md:text-xs btn-press"
-          >
-             <RefreshCcw className="w-4 h-4 md:w-5 md:h-5" /> {t("another_specimen")}
-          </button>
+          <div className="space-y-4">
+            <button 
+               onClick={() => { setResult(null); setImage(null); }}
+               className="w-full py-4 md:py-6 glass border-2 border-dashed border-neutral-200 rounded-3xl md:rounded-[40px] text-neutral-400 font-black uppercase tracking-widest hover:bg-white hover:text-brand hover:border-brand/40 transition-all flex items-center justify-center gap-3 md:gap-4 text-[10px] md:text-xs btn-press"
+            >
+               <RefreshCcw className="w-4 h-4 md:w-5 md:h-5" /> {t("another_specimen")}
+            </button>
+
+            <button 
+               onClick={saveDiagnosisToHistory}
+               disabled={isSaving}
+               className="w-full py-4 md:py-6 bg-slate-900 dark:bg-white text-white dark:text-slate-950 rounded-3xl md:rounded-[40px] font-black uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 md:gap-4 text-[10px] md:text-xs btn-press shadow-xl"
+            >
+               {isSaving ? <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 animate-spin" /> : <CheckCircle className="w-4 h-4 md:w-5 md:h-5" />} 
+               {t("save_diagnosis") || "Save Diagnosis to History"}
+            </button>
+          </div>
         </motion.div>
       )}
 

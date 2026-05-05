@@ -26,102 +26,107 @@ export default function Account() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         
         {/* Profile Card */}
-        <div className="md:col-span-1 space-y-6">
-          <div className="premium-card p-8 text-center">
-             <div className="w-20 h-20 bg-brand/10 text-brand rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-black">
+        <div className="md:col-span-1 space-y-8">
+          <div className="premium-card p-10 text-center bg-white shadow-2xl shadow-slate-900/5 group border-none">
+             <div className="w-24 h-24 bg-brand/10 text-brand rounded-[32px] flex items-center justify-center mx-auto mb-8 text-4xl font-black shadow-inner border border-brand/5 group-hover:scale-110 transition-transform">
                 {profile?.fullName[0]}
              </div>
-             <h3 className="text-xl font-bold">{profile?.fullName}</h3>
-             <p className="text-sm text-neutral-500 mb-6">{profile?.email}</p>
-             <div className="pt-6 border-t border-neutral-100">
-                <span className={`px-4 py-1.5 rounded-full text-xs font-bold ${isTrialExpired ? 'bg-red-100 text-red-600' : 'bg-brand/10 text-brand'}`}>
-                   {profile?.subscriptionStatus === "trial" ? "Free Trial" : "Premium Member"}
+             <h3 className="text-2xl font-black text-slate-950 tracking-tighter">{profile?.fullName}</h3>
+             <p className="text-sm font-medium text-slate-400 mt-2 mb-10">{profile?.email}</p>
+             <div className="pt-8 border-t border-slate-50">
+                <span className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] ${isTrialExpired ? 'bg-error text-white' : 'bg-brand/10 text-brand'}`}>
+                   {profile?.subscriptionStatus === "trial" ? "Bio-Trial Phase" : "Neural Network Tier"}
                 </span>
              </div>
           </div>
 
-          <div className="premium-card p-6">
-             <h4 className="font-bold text-sm mb-4 uppercase tracking-widest text-neutral-400">Settings</h4>
-             <button className="w-full flex items-center justify-between p-3 hover:bg-neutral-50 rounded-xl transition-colors font-medium text-sm">
-                Language <span className="text-brand">English</span>
-             </button>
-             <button className="w-full flex items-center justify-between p-3 hover:bg-neutral-50 rounded-xl transition-colors font-medium text-sm">
-                Country <span className="text-brand">Rwanda</span>
-             </button>
+          <div className="premium-card p-10 bg-white border-none shadow-premium">
+             <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 mb-8">Node Settings</h4>
+             <div className="space-y-4">
+               <button className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all font-black text-[11px] uppercase tracking-widest text-slate-950">
+                  Language <span className="text-brand">English</span>
+               </button>
+               <button className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100 rounded-2xl transition-all font-black text-[11px] uppercase tracking-widest text-slate-950">
+                  Registry <span className="text-brand">Global</span>
+               </button>
+             </div>
           </div>
         </div>
 
         {/* Subscription Card */}
         <div className="md:col-span-2">
-           <div className="premium-card p-10 bg-gradient-to-br from-white to-neutral-50 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-5">
-                 <Zap className="w-32 h-32" />
+           <div className="premium-card p-12 bg-slate-950 text-white relative overflow-hidden border-none shadow-2xl shadow-slate-950/20">
+              <div className="absolute top-0 right-0 p-12 opacity-10 blur-[2px] rotate-12 scale-150">
+                 <Zap className="w-64 h-64 text-brand" />
               </div>
               
-              <h2 className="text-3xl font-black mb-2">Upgrade to Premium</h2>
-              <p className="text-neutral-500 mb-8 max-w-sm">
-                Unlock all features including unlimited scans, long-term tracking, and advanced AI coaching.
-              </p>
+              <div className="relative z-10">
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 mb-4 block">Biological Advancement</span>
+                <h2 className="text-4xl md:text-6xl font-black mb-4 tracking-tighter">Tier-2 Upgrade.</h2>
+                <p className="text-slate-400 mb-12 max-w-sm text-lg font-medium leading-relaxed">
+                  "Unlock unrestricted diagnostic throughput, holographic crop timelines, and neural coaching protocols."
+                </p>
 
-              <div className="flex items-baseline gap-2 mb-10">
-                 <span className="text-5xl font-black">$2.99</span>
-                 <span className="text-neutral-400 font-bold">/ Month</span>
-              </div>
+                <div className="flex items-baseline gap-4 mb-14">
+                   <span className="text-7xl font-black tracking-tighter text-white font-mono">$2.99</span>
+                   <span className="text-white/30 font-black uppercase tracking-widest text-xs">/ Cycle</span>
+                </div>
 
-              <div className="space-y-4 mb-10">
-                 <FeatureItem text="Unlimited AI Crop Diagnoses" />
-                 <FeatureItem text="Unlimited Recovery Tracking" />
-                 <FeatureItem text="Priority AI Farming Coach Access" />
-                 <FeatureItem text="Advanced Weather Intelligence" />
-              </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-14">
+                   <FeatureItem text="Unlimited Biological Probes" />
+                   <FeatureItem text="Real-time Lifecycle Sync" />
+                   <FeatureItem text="Direct Neural Coach Uplink" />
+                   <FeatureItem text="Advanced Weather Synthesis" />
+                </div>
 
-              <div className="bg-white rounded-3xl p-6 border border-neutral-200 mb-10">
-                 <h4 className="font-bold text-sm mb-4">Select Payment Method</h4>
-                 <div className="grid grid-cols-2 gap-4">
-                    <button 
-                       onClick={() => setPaymentMethod("card")}
-                       className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition-all ${
-                         paymentMethod === 'card' ? 'border-brand bg-brand/5 shadow-lg shadow-brand/10' : 'border-neutral-100 hover:border-neutral-200'
-                       }`}
-                    >
-                       <CreditCard className={`w-5 h-5 ${paymentMethod === 'card' ? 'text-brand' : 'text-neutral-400'}`} />
-                       <span className="font-bold text-sm">Card</span>
-                    </button>
-                    <button 
-                       onClick={() => setPaymentMethod("momo")}
-                       className={`p-4 rounded-2xl border-2 flex items-center gap-3 transition-all ${
-                         paymentMethod === 'momo' ? 'border-brand bg-brand/5 shadow-lg shadow-brand/10' : 'border-neutral-100 hover:border-neutral-200'
-                       }`}
-                    >
-                       <Smartphone className={`w-5 h-5 ${paymentMethod === 'momo' ? 'text-brand' : 'text-neutral-400'}`} />
-                       <span className="font-bold text-sm">MoMo</span>
-                    </button>
-                 </div>
-              </div>
+                <div className="bg-white/5 rounded-[40px] p-10 border border-white/10 mb-12 backdrop-blur-md">
+                   <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mb-8">Currency Protocol</h4>
+                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <button 
+                         onClick={() => setPaymentMethod("card")}
+                         className={`p-6 rounded-[28px] border-2 flex items-center gap-4 transition-all duration-500 ${
+                           paymentMethod === 'card' ? 'border-brand bg-white text-slate-950 shadow-2xl' : 'border-white/5 hover:border-white/10 text-white/60'
+                         }`}
+                      >
+                         <CreditCard className={`w-6 h-6 ${paymentMethod === 'card' ? 'text-brand' : 'text-white/20'}`} />
+                         <span className="font-black text-xs uppercase tracking-widest">Global Credit</span>
+                      </button>
+                      <button 
+                         onClick={() => setPaymentMethod("momo")}
+                         className={`p-6 rounded-[28px] border-2 flex items-center gap-4 transition-all duration-500 ${
+                           paymentMethod === 'momo' ? 'border-brand bg-white text-slate-950 shadow-2xl' : 'border-white/5 hover:border-white/10 text-white/60'
+                         }`}
+                      >
+                         <Smartphone className={`w-6 h-6 ${paymentMethod === 'momo' ? 'text-brand' : 'text-white/20'}`} />
+                         <span className="font-black text-xs uppercase tracking-widest">Mobile Logic</span>
+                      </button>
+                   </div>
+                </div>
 
-              <button 
-                onClick={handleSubscribe}
-                disabled={isProcessing}
-                className="w-full py-5 bg-brand text-white rounded-2xl font-black shadow-2xl shadow-brand/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
-              >
-                {isProcessing ? "Processing..." : "Secure Subscribe Now"} 
-                {!isProcessing && <ArrowRight className="w-5 h-5" />}
-              </button>
-              
-              <div className="mt-6 flex items-center justify-center gap-6 opacity-40">
-                 <div className="flex items-center gap-1.5 text-xs font-bold">
-                    <ShieldCheck className="w-4 h-4" /> Secure Payment
-                 </div>
-                 <div className="flex items-center gap-1.5 text-xs font-bold">
-                    <Clock className="w-4 h-4" /> Cancel Anytime
-                 </div>
+                <button 
+                  onClick={handleSubscribe}
+                  disabled={isProcessing}
+                  className="w-full py-6 bg-brand text-white rounded-[32px] font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-brand/40 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-4 group"
+                >
+                  {isProcessing ? "Protocol Syncing..." : "Initialize Upgrade"} 
+                  {!isProcessing && <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />}
+                </button>
+                
+                <div className="mt-10 flex items-center justify-center gap-10 opacity-30">
+                   <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest">
+                      <ShieldCheck className="w-5 h-5" /> SSL Secured
+                   </div>
+                   <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest">
+                      <Clock className="w-5 h-5" /> Perpetual Access
+                   </div>
+                </div>
               </div>
            </div>
            
            {isTrialExpired && (
-             <div className="mt-8 p-6 bg-red-50 rounded-3xl border border-red-100 flex items-start gap-4">
-                <Info className="w-6 h-6 text-red-600 flex-shrink-0" />
-                <p className="text-sm text-red-800 font-medium">
+             <div className="mt-8 p-10 bg-rose-50 rounded-[40px] border border-rose-100 flex items-start gap-6">
+                <Info className="w-8 h-8 text-rose-600 flex-shrink-0" />
+                <p className="text-sm text-rose-900 font-bold leading-relaxed">
                   Your trial has expired. Access to key diagnosis and tracking features is currently restricted. Upgrade now to restore full access.
                 </p>
              </div>

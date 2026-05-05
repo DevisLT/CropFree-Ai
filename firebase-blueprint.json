@@ -48,6 +48,17 @@
         "imageUrl": { "type": "string" },
         "status": { "type": "string" },
         "progress": { "type": "number" },
+        "recoverySteps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+               "text": { "type": "string" },
+               "completed": { "type": "boolean" },
+               "completedAt": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
         "createdAt": { "type": "string", "format": "date-time" },
         "updatedAt": { "type": "string", "format": "date-time" }
       },

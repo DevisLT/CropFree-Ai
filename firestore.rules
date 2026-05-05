@@ -55,8 +55,8 @@ service cloud.firestore {
                     && incoming().userId == existing().userId
                     && incoming().createdAt == existing().createdAt
                     && (
-                      // Action: Progress Update
-                      incoming().diff(existing()).affectedKeys().hasOnly(['status', 'progress', 'updatedAt'])
+                      // Action: Progress/Recovery Update
+                      incoming().diff(existing()).affectedKeys().hasOnly(['status', 'progress', 'recoverySteps', 'updatedAt'])
                       || 
                       // Action: Rename
                       incoming().diff(existing()).affectedKeys().hasOnly(['name', 'updatedAt'])
@@ -69,7 +69,9 @@ service cloud.firestore {
           && data.disease is string && data.disease.size() <= 100
           && data.status is string && data.status.size() <= 50
           && data.progress is number && data.progress >= 0 && data.progress <= 100
-          && data.keys().size() <= 15;
+          && (data.imageUrl == null || (data.imageUrl is string && data.imageUrl.size() <= 1000000))
+          && (data.recoverySteps is list && data.recoverySteps.size() <= 20)
+          && data.keys().size() <= 16;
       }
     }
 
@@ -94,7 +96,8 @@ service cloud.firestore {
           && (data.possibleConditions is list && data.possibleConditions.size() <= 10)
           && (data.recommendedActions is list && data.recommendedActions.size() <= 10)
           && (data.preventionTips is list && data.preventionTips.size() <= 10)
-          && data.keys().size() <= 25;
+          && (data.imageUrl == null || (data.imageUrl is string && data.imageUrl.size() <= 1000000))
+          && data.keys().size() <= 26;
       }
     }
 
@@ -137,6 +140,11 @@ service cloud.firestore {
     // 🌦️ WEATHER CACHE (Public read)
     match /weather/{docId} {
       allow read: if isSignedIn();
+    }
+
+    // 🔍 CONNECTION TEST PATH
+    match /test/connection {
+      allow get: if true;
     }
 
     // 📚 GUIDANCE CONTENT (Public read)
