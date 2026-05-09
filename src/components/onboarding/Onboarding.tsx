@@ -39,7 +39,7 @@ export default function Onboarding() {
           className="hidden lg:block space-y-10"
         >
           <div className="flex items-center gap-4">
-             <div className="w-16 h-16 bg-brand rounded-2xl flex items-center justify-center shadow-2xl shadow-brand/20">
+             <div className="w-16 h-16 bg-brand rounded-none flex items-center justify-center shadow-2xl shadow-brand/20">
                 <Leaf className="text-white w-10 h-10" />
              </div>
              <div>
@@ -74,10 +74,10 @@ export default function Onboarding() {
               initial={{ opacity: 0, y: 40, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -40, scale: 0.95 }}
-              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-14 text-center md:text-left rounded-[48px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white"
+              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-14 text-center md:text-left rounded-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white"
             >
               <div className="lg:hidden flex items-center justify-center gap-3 mb-10">
-                <div className="w-10 h-10 bg-brand rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-brand rounded-none flex items-center justify-center">
                   <Leaf className="text-white w-6 h-6" />
                 </div>
                 <h1 className="text-3xl font-black text-slate-950 tracking-tighter">CropFree.</h1>
@@ -102,8 +102,8 @@ export default function Onboarding() {
                        { icon: Camera, title: "Diagnostic Scan", sub: "Identify symptoms in 500ms" },
                        { icon: Activity, title: "Recovery Journal", sub: "Step-by-step healing protocols" }
                      ].map((item, i) => (
-                       <div key={i} className="flex items-center gap-5 p-5 bg-slate-50 rounded-[28px] border border-slate-100 group hover:border-brand/30 transition-colors">
-                          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                       <div key={i} className="flex items-center gap-5 p-5 bg-slate-50 rounded-none border border-slate-100 group hover:border-brand/30 transition-colors">
+                          <div className="w-14 h-14 bg-white rounded-none flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                              <item.icon className="w-7 h-7 text-brand" />
                           </div>
                           <div>
@@ -120,8 +120,8 @@ export default function Onboarding() {
                 <div className="space-y-6">
                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-brand mb-4 block">03 / Reliability</span>
                   <h2 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter leading-none">Global Standard.</h2>
-                  <div className="p-8 bg-slate-950 rounded-[40px] text-white relative overflow-hidden group shadow-2xl">
-                     <div className="absolute top-0 right-0 w-32 h-32 bg-brand/10 rounded-full blur-3xl group-hover:scale-125 transition-transform" />
+                  <div className="p-8 bg-slate-950 rounded-none text-white relative overflow-hidden group shadow-2xl">
+                     <div className="absolute top-0 right-0 w-32 h-32 bg-brand/10 rounded-none blur-3xl group-hover:scale-125 transition-transform" />
                      <Sparkles className="text-brand w-12 h-12 mb-4" />
                      <p className="text-xl font-black mb-2">Sustainable Ecosystems</p>
                      <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] leading-relaxed">Helping farmers protect biodiversity while maximizing output safely.</p>
@@ -131,7 +131,7 @@ export default function Onboarding() {
 
               <button
                 onClick={next}
-                className="mt-12 w-full py-6 bg-slate-950 text-white rounded-[24px] font-black shadow-2xl shadow-slate-950/20 flex items-center justify-center gap-4 hover:bg-brand transition-all group btn-press text-xs uppercase tracking-[0.2em]"
+                className="mt-12 w-full py-6 bg-slate-950 text-white rounded-none font-black shadow-2xl shadow-slate-950/20 flex items-center justify-center gap-4 hover:bg-brand transition-all group btn-press text-xs uppercase tracking-[0.2em]"
               >
                 Continue Journey <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
               </button>
@@ -139,7 +139,7 @@ export default function Onboarding() {
               <div className="mt-10 flex justify-between items-center px-4">
                  <div className="flex gap-2">
                     {[0, 1, 2].map(i => (
-                      <div key={i} className={`h-1.5 rounded-full transition-all duration-700 ${step === i ? "w-10 bg-brand" : "w-1.5 bg-slate-100"}`} />
+                      <div key={i} className={`h-1.5 rounded-none transition-all duration-700 ${step === i ? "w-10 bg-brand" : "w-1.5 bg-slate-100"}`} />
                     ))}
                  </div>
                  <button onClick={() => setStep(3)} className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-brand transition-colors">Skip</button>
@@ -150,9 +150,9 @@ export default function Onboarding() {
               key="auth"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-16 text-center rounded-[48px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white"
+              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-16 text-center rounded-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white"
             >
-              <div className="w-20 h-20 bg-slate-50 rounded-[28px] flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-100 rotate-3">
+              <div className="w-20 h-20 bg-slate-50 rounded-none flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-100 rotate-3">
                  <Shield className="w-10 h-10 text-brand" />
               </div>
               <h2 className="text-5xl font-black text-slate-950 mb-4 tracking-tighter">Secure Field.</h2>
@@ -162,7 +162,7 @@ export default function Onboarding() {
               
               <button
                 onClick={handleLogin}
-                className="w-full py-5 bg-white border-2 border-slate-100 rounded-[24px] font-black text-slate-950 flex items-center justify-center gap-4 hover:border-brand transition-all mb-8 group btn-press shadow-xl"
+                className="w-full py-5 bg-white border-2 border-slate-100 rounded-none font-black text-slate-950 flex items-center justify-center gap-4 hover:border-brand transition-all mb-8 group btn-press shadow-xl"
               >
                 <img src="https://www.google.com/favicon.ico" className="w-6 h-6 group-hover:scale-125 transition-transform" alt="Google" />
                 Sign in with Google
