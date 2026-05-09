@@ -194,7 +194,7 @@ export default function RecoveryTracker() {
                     <div className="w-4 h-4 bg-brand rounded-full animate-pulse shadow-[0_0_15px_#00ff88]" />
                     <span className="text-[11px] font-black uppercase tracking-[0.6em] whitespace-nowrap">Active Telemetry Link</span>
 </div>
-<h2 className="text-6xl md:text-8xl lg:text-[10rem] font-black text-white tracking-tighter mb-6 leading-none drop-shadow-xl">{selectedCrop.name}</h2>
+<h2 className="text-4xl md:text-6xl lg:text-7xl font-black text-white tracking-tighter mb-6 leading-none drop-shadow-xl">{selectedCrop.name}</h2>
 <div className="flex items-center gap-6">
   <span className="px-8 py-3 bg-white text-deep-green text-xs font-black uppercase tracking-[0.4em] rounded-full shadow-2xl border-2 border-brand">
     {selectedCrop.disease}
@@ -207,8 +207,8 @@ export default function RecoveryTracker() {
                <div className="text-center md:text-left">
                  <span className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-400 mb-4 block">Biological Vitality Output</span>
                  <div className="flex items-baseline gap-6 border-b-4 border-brand/10 pb-4">
-                   <h3 className="text-7xl md:text-9xl font-black text-deep-green tracking-tighter leading-none">{selectedCrop.progress}</h3>
-<span className="text-3xl md:text-4xl font-black text-brand">%</span>
+                   <h3 className="text-5xl md:text-7xl font-black text-deep-green tracking-tighter leading-none">{selectedCrop.progress}</h3>
+<span className="text-2xl md:text-3xl font-black text-brand">%</span>
 </div>
 </div>
 <div className="w-full md:w-[50%] space-y-8">
@@ -232,7 +232,7 @@ export default function RecoveryTracker() {
                     <AlertCircle className="w-10 h-10 animate-bounce" />
                     <span className="text-[12px] font-black uppercase tracking-[0.7em]">VERIFICATION MANDATORY</span>
 </div>
-<h4 className="text-4xl md:text-5xl lg:text-7xl font-black mb-10 tracking-tighter leading-tight uppercase">Revalidation Scan.</h4>
+<h4 className="text-2xl md:text-4xl lg:text-5xl font-black mb-10 tracking-tighter leading-tight uppercase">Revalidation Scan.</h4>
 <p className="text-slate-400 text-xl font-medium mb-16 leading-relaxed border-l-4 border-brand/20 pl-8">
    "Input a high-resolution visual specimen to confirm systemic eradiction of targeted pathogens across the biological nexus."
 </p>
@@ -285,7 +285,7 @@ export default function RecoveryTracker() {
    <div className="w-3 h-3 bg-brand rounded-full shadow-[0_0_15px_#00ff88]" />
    <span className="text-[12px] font-black uppercase tracking-[0.7em] text-brand">Neural Directive Hub</span>
 </div>
-<h3 className="text-5xl md:text-7xl font-black text-deep-green tracking-tighter leading-none uppercase">Restoration.</h3>
+<h3 className="text-3xl md:text-5xl font-black text-deep-green tracking-tighter leading-none uppercase">Restoration.</h3>
                 </div>
   
                 <div className="space-y-6 flex-1">
@@ -378,8 +378,8 @@ export default function RecoveryTracker() {
               <div className="h-[2px] w-16 bg-brand/30" />
               <span className="text-[12px] font-black uppercase tracking-[0.7em] text-brand">Botanical Genetic Nexus</span>
             </div>
-            <h2 className="text-6xl md:text-[10rem] font-black tracking-tighter leading-none text-deep-green drop-shadow-sm uppercase">Archive.</h2>
-            <p className="text-slate-500 text-xl md:text-4xl font-medium max-w-4xl mt-12 leading-relaxed">
+            <h2 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-none text-deep-green drop-shadow-sm uppercase">Archive.</h2>
+            <p className="text-slate-500 text-lg md:text-2xl font-medium max-w-4xl mt-12 leading-relaxed">
               "Mapping thermal gradients and restorative milestones in real-time. Synthesizing the evolution from biological pathogen to botanical prosperity."
             </p>
          </div>
@@ -398,7 +398,7 @@ export default function RecoveryTracker() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="FILTER BIOSIGNATURES..."
-            className="block w-full pl-28 pr-12 py-12 bg-white/40 border-4 border-white backdrop-blur-3xl rounded-[64px] text-deep-green font-black text-3xl md:text-5xl focus:ring-4 focus:ring-brand focus:bg-white focus:border-brand transition-all shadow-2xl placeholder:text-slate-200 placeholder:tracking-tighter"
+            className="block w-full pl-28 pr-12 py-12 bg-white/40 border-4 border-white backdrop-blur-3xl rounded-[64px] text-deep-green font-black text-2xl md:text-4xl focus:ring-4 focus:ring-brand focus:bg-white focus:border-brand transition-all shadow-2xl placeholder:text-slate-200 placeholder:tracking-tighter"
          />
          {searchQuery && (
             <button 
@@ -483,7 +483,7 @@ export default function RecoveryTracker() {
             <div className="px-10 pb-16 flex-1 flex flex-col justify-between">
                <div className="space-y-8">
                   <div className="flex items-start justify-between gap-6">
-                    <h4 className="text-5xl md:text-7xl font-black text-deep-green tracking-tighter leading-none group-hover:text-brand transition-all drop-shadow-sm uppercase">{crop.name}</h4>
+                    <h4 className="text-3xl md:text-5xl font-black text-deep-green tracking-tighter leading-none group-hover:text-brand transition-all drop-shadow-sm uppercase">{crop.name}</h4>
                     <div className="w-20 h-20 bg-white rounded-[32px] border-4 border-slate-50 flex items-center justify-center text-slate-100 group-hover:bg-brand group-hover:text-white group-hover:border-white transition-all shadow-xl group-hover:rotate-12">
                        <TrendingUp className="w-10 h-10" />
                     </div>
@@ -534,8 +534,8 @@ export default function RecoveryTracker() {
              <div className="w-40 h-40 md:w-56 md:h-56 bg-white rounded-[64px] flex items-center justify-center mb-16 rotate-12 shadow-2xl border-4 border-slate-50 group-hover:rotate-0 transition-all duration-1000">
                 <Leaf className="w-20 h-20 md:w-32 md:h-32 text-brand animate-pulse" />
              </div>
-             <h3 className="text-5xl md:text-8xl lg:text-[10rem] font-black mb-10 tracking-tighter text-deep-green uppercase leading-none">{t("empty_tracker") || "Archive Latent."}</h3>
-<p className="text-slate-400 text-xl md:text-4xl font-medium mb-20 max-w-2xl mx-auto leading-relaxed px-12">
+             <h3 className="text-4xl md:text-6xl lg:text-8xl font-black mb-10 tracking-tighter text-deep-green uppercase leading-none">{t("empty_tracker") || "Archive Latent."}</h3>
+<p className="text-slate-400 text-lg md:text-2xl font-medium mb-20 max-w-2xl mx-auto leading-relaxed px-12">
   "Initialize restoration sequences within the matrix to populate this biological archive."
 </p>
              <div className="flex gap-10">

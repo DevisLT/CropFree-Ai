@@ -242,9 +242,9 @@ export default function MainShell() {
       <motion.aside
         initial={false}
         animate={{ 
-          width: isMobile ? (isSidebarOpen ? "85%" : 0) : (isSidebarOpen ? 320 : 0),
+          width: isMobile ? (isSidebarOpen ? "85%" : 0) : (isSidebarOpen ? 400 : 0),
           opacity: isSidebarOpen ? 1 : 0,
-          x: isMobile && !isSidebarOpen ? (isRTL ? 320 : -320) : 0
+          x: isMobile && !isSidebarOpen ? (isRTL ? 400 : -400) : 0
         }}
         style={{ right: isRTL && isMobile ? 0 : 'auto', left: !isRTL && isMobile ? 0 : 'auto' }}
         className={`bg-white/90 backdrop-blur-3xl border-r border-brand/10 flex flex-col shadow-2xl z-[70] ${

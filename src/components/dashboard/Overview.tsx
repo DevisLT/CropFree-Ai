@@ -85,10 +85,10 @@ export default function Overview() {
               <div className="w-14 h-1 flex bg-brand rounded-full" />
               <span className="text-[11px] font-black uppercase tracking-[0.6em] text-brand">{t('field_overview')}</span>
             </div>
-            <h2 className="text-6xl md:text-9xl font-black heading-tight mb-10 text-deep-green drop-shadow-sm">
+            <h2 className="text-4xl md:text-7xl font-black heading-tight mb-10 text-deep-green drop-shadow-sm">
                {t('good_morning')}.
             </h2>
-            <p className="text-slate-500 max-w-2xl text-xl md:text-3xl font-medium leading-relaxed">
+            <p className="text-slate-500 max-w-2xl text-lg md:text-2xl font-medium leading-relaxed">
               {t('promising_growth') || "Your fields are showing signs of robust development today."}
             </p>
           </motion.div>
@@ -118,7 +118,7 @@ export default function Overview() {
             <div className="relative z-10">
               <span className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-400 mb-6 block">{t('health_score')}</span>
               <div className="flex items-baseline gap-8">
-                 <span className="text-7xl md:text-9xl font-black text-deep-green leading-none tracking-tighter">
+                 <span className="text-5xl md:text-7xl font-black text-deep-green leading-none tracking-tighter">
                    {recentCrops.filter(c => c.status === 'Worsening').length}
                  </span>
                  <div className="flex flex-col">
@@ -187,9 +187,9 @@ export default function Overview() {
            <div className="absolute bottom-0 left-0 w-80 h-80 bg-accent/20 rounded-full blur-[120px]" />
            
            <div className="relative z-10">
-             <span className="text-[11px] font-black uppercase tracking-[0.5em] text-white/30 mb-6 block">Planetary Environment</span>
+             <span className="text-[11px] font-black uppercase tracking-[0.5em] text-brand mb-6 block">Planetary Environment</span>
              <div className="flex items-end gap-8 pb-16 border-b border-white/5 mb-12">
-               <span className="text-8xl md:text-[10rem] font-black tracking-tighter leading-none drop-shadow-xl">24°</span>
+               <span className="text-6xl md:text-8xl font-black tracking-tighter leading-none drop-shadow-xl">24°</span>
                <div className="flex flex-col pb-6">
                  <span className="text-[11px] font-black uppercase tracking-[0.3em] text-brand mb-1">Station 042</span>
                  <span className="text-2xl font-black text-white/80 tracking-tight">Kigali, RW</span>

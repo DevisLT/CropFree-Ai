@@ -45,8 +45,8 @@ export default function Coach() {
             <div className="h-[2px] w-16 bg-brand/30" />
             <span className="text-[12px] font-black uppercase tracking-[0.7em] text-brand">Neural Farming Hub</span>
           </div>
-          <h2 className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter text-deep-green leading-none drop-shadow-sm uppercase">Coach.</h2>
-          <p className="text-slate-500 text-xl md:text-3xl font-medium mt-10 leading-relaxed max-w-4xl">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-deep-green leading-none drop-shadow-sm uppercase">Coach.</h2>
+          <p className="text-slate-500 text-lg md:text-2xl font-medium mt-10 leading-relaxed max-w-4xl">
             "Direct interface with our recursive AI engine. Real-time decision synthesis for the modern botanical architect."
           </p>
         </div>
@@ -69,8 +69,8 @@ export default function Coach() {
                <div className="flex-1 space-y-12">
                  <div className="space-y-4">
                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-brand block">Current Recommendation</span>
-                   <h3 className="text-4xl md:text-7xl font-black tracking-tighter leading-none mb-8">Execute Bio-Sync Sequence.</h3>
-                   <p className="text-white/60 text-xl md:text-3xl font-medium leading-relaxed max-w-2xl">
+                   <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-none mb-8">Execute Bio-Sync Sequence.</h3>
+                   <p className="text-white/60 text-lg md:text-2xl font-medium leading-relaxed max-w-2xl">
                      "Neural scans detect early nitrogen deficiency in the South-East quadrant. Recommend immediate application of V-3 formulation to prevent yield loss."
                    </p>
                  </div>
@@ -92,7 +92,7 @@ export default function Coach() {
                      <span className="text-brand font-black">LOW</span>
                    </div>
                    <div className="flex items-baseline gap-4">
-                      <span className="text-7xl font-black text-white tracking-tighter">94%</span>
+                      <span className="text-5xl font-black text-white tracking-tighter">94%</span>
                       <TrendingUp className="w-8 h-8 text-brand" />
                    </div>
                    <p className="text-[11px] font-bold text-white/30 uppercase tracking-[0.2em] leading-relaxed">
@@ -125,7 +125,7 @@ export default function Coach() {
                     <div>
                       <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.5em] mb-6 block">{insight.title}</span>
                       <div className="flex items-baseline gap-6">
-                        <span className="text-7xl font-black text-deep-green tracking-tighter leading-none">{insight.value}</span>
+                        <span className="text-5xl font-black text-deep-green tracking-tighter leading-none">{insight.value}</span>
                         <span className="text-sm font-black text-slate-300 uppercase tracking-widest">{insight.metric}</span>
                       </div>
                     </div>

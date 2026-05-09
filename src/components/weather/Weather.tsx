@@ -94,8 +94,8 @@ export default function Weather() {
               <div className="h-[2px] w-16 bg-brand/30" />
               <span className="text-[12px] font-black uppercase tracking-[0.7em] text-brand">Satellite Bio-Data Stream</span>
             </div>
-            <h2 className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter text-deep-green leading-none drop-shadow-sm uppercase">Atmospheric.</h2>
-            <p className="text-slate-500 text-xl md:text-3xl lg:text-4xl font-medium mt-10 leading-relaxed max-w-4xl">
+            <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-deep-green leading-none drop-shadow-sm uppercase">Atmospheric.</h2>
+            <p className="text-slate-500 text-lg md:text-2xl lg:text-3xl font-medium mt-10 leading-relaxed max-w-4xl">
               "Mapping thermal gradients and humidity thresholds for genetic optimization. Precision biosphere monitoring active."
             </p>
          </div>
@@ -116,8 +116,8 @@ export default function Weather() {
                   {location.name} <span className="opacity-30">|</span> {location.country}
                </div>
                <div className="flex items-baseline justify-center xl:justify-start gap-8 mb-12">
-                  <h2 className="text-9xl md:text-[12rem] lg:text-[18rem] font-black leading-none tracking-tighter drop-shadow-2xl">{Math.round(current.temp_c)}°</h2>
-                  <span className="text-4xl md:text-7xl lg:text-8xl font-black text-brand leading-none">CELSIUS</span>
+                  <h2 className="text-7xl md:text-9xl lg:text-[12rem] font-black leading-none tracking-tighter drop-shadow-2xl">{Math.round(current.temp_c)}°</h2>
+                  <span className="text-2xl md:text-4xl lg:text-5xl font-black text-brand leading-none">CELSIUS</span>
                </div>
                <div className="flex flex-col md:flex-row items-center justify-center xl:justify-start gap-10">
                  <div className="px-10 py-4 bg-brand text-deep-green text-sm font-black uppercase tracking-[0.4em] rounded-full shadow-2xl border-2 border-white/20">
@@ -160,9 +160,9 @@ export default function Weather() {
               <Sparkles className="w-6 h-6 text-brand" />
               <span className="text-[12px] font-black uppercase tracking-[0.6em] text-brand">Heuristic Growth Analysis</span>
             </div>
-            <h4 className="text-5xl md:text-7xl font-black text-deep-green tracking-tighter leading-tight uppercase">Environmental Synthesis.</h4>
+            <h4 className="text-3xl md:text-5xl font-black text-deep-green tracking-tighter leading-tight uppercase">Environmental Synthesis.</h4>
             <div className="p-10 bg-white/60 rounded-[40px] border border-white/80 shadow-inner">
-               <p className="text-2xl md:text-4xl font-semibold text-slate-500 leading-relaxed max-w-5xl">
+               <p className="text-lg md:text-2xl font-semibold text-slate-500 leading-relaxed max-w-5xl">
                   "{current.humidity > 80 ? "Critical atmospheric saturation detected. Hyper-hydric stress imminent. Execute preventive antifungal protocols immediately." : 
                    current.temp_c > 30 ? "Maximum thermal threshold exceeded. Bio-luminescent activity peaked. Initiate high-density cooling sequence for cellular stability." :
                    forecastDay[0].day.daily_chance_of_rain > 50 ? "Hydro-sequence incoming. Discontinue artificial watering cycles to maintain root integrity and prevent saturation." :
@@ -193,7 +193,7 @@ export default function Weather() {
                   <div className="absolute inset-0 bg-brand/5 blur-2xl group-hover:opacity-100 opacity-0 transition-opacity" />
                   <Icon className="w-16 h-16 text-slate-400 group-hover:text-white transition-all relative z-10" />
                 </div>
-                <p className="text-6xl md:text-8xl font-black text-deep-green tracking-tighter leading-none">{Math.round(f.day.avgtemp_c)}°</p>
+                <p className="text-4xl md:text-6xl font-black text-deep-green tracking-tighter leading-none">{Math.round(f.day.avgtemp_c)}°</p>
              </motion.div>
            );
          })}

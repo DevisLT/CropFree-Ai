@@ -21,8 +21,8 @@ export default function Guidance() {
             <div className="h-[2px] w-16 bg-brand/30" />
             <span className="text-[12px] font-black uppercase tracking-[0.7em] text-brand">Planetary Biosecurity</span>
           </div>
-          <h2 className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter text-deep-green leading-none drop-shadow-sm uppercase">Guidance.</h2>
-          <p className="text-slate-500 text-xl md:text-3xl font-medium mt-10 leading-relaxed max-w-4xl">
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter text-deep-green leading-none drop-shadow-sm uppercase">Guidance.</h2>
+          <p className="text-slate-500 text-lg md:text-2xl font-medium mt-10 leading-relaxed max-w-4xl">
             "High-resolution biosecurity monitoring. Defending genetic integrity through real-time molecular surveillance."
           </p>
         </div>
@@ -45,8 +45,8 @@ export default function Guidance() {
                         <Microscope className="w-8 h-8 text-brand" />
                         <span className="text-[11px] font-black uppercase tracking-[0.6em] text-brand">Genetic Matrix Diagnostic</span>
                      </div>
-                     <h3 className="text-5xl md:text-8xl font-black text-deep-green tracking-tighter mb-12 uppercase leading-none">Soil Profile.</h3>
-                     <p className="text-xl md:text-3xl font-bold text-slate-500 leading-relaxed mb-16 opacity-80">
+                     <h3 className="text-3xl md:text-6xl font-black text-deep-green tracking-tighter mb-12 uppercase leading-none">Soil Profile.</h3>
+                     <p className="text-lg md:text-2xl font-bold text-slate-500 leading-relaxed mb-16 opacity-80">
                        "Detailed structural analysis of the lithosphere. Synchronizing mineral density with planetary growth cycles."
                      </p>
                      
@@ -59,7 +59,7 @@ export default function Guidance() {
                         ].map((m, i) => (
                           <div key={i} className="space-y-4 border-l-4 border-brand/20 pl-8">
                              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">{m.label}</span>
-                             <p className="text-4xl font-black text-deep-green">{m.val}</p>
+                             <p className="text-2xl font-black text-deep-green">{m.val}</p>
                           </div>
                         ))}
                      </div>
@@ -70,8 +70,8 @@ export default function Guidance() {
                         <div className="absolute top-0 right-0 w-32 h-32 bg-brand/20 rounded-full blur-[40px] pointer-events-none" />
                         <span className="text-[11px] font-black uppercase tracking-[0.5em] text-white/40 mb-6 block">Neural Score</span>
                         <div className="flex items-baseline gap-4 mb-8">
-                           <span className="text-9xl font-black tracking-tighter leading-none">92</span>
-                           <span className="text-3xl font-black text-brand">PT</span>
+                           <span className="text-6xl font-black tracking-tighter leading-none">92</span>
+                           <span className="text-xl font-black text-brand">PT</span>
                         </div>
                         <p className="text-sm font-bold text-white/40 uppercase tracking-[0.2em] leading-tight">
                           BIOSYSTEMS INTEGRITY RATING
@@ -107,7 +107,7 @@ export default function Guidance() {
                     </div>
                  </div>
                  <div>
-                    <h4 className="text-6xl font-black text-deep-green tracking-tighter leading-none mb-4 uppercase">{item.value}</h4>
+                    <h4 className="text-4xl font-black text-deep-green tracking-tighter leading-none mb-4 uppercase">{item.value}</h4>
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.4em]">{item.status} Status</span>
                  </div>
               </motion.div>
@@ -120,7 +120,7 @@ export default function Guidance() {
          <div className="flex items-end justify-between px-10">
             <div className="space-y-4">
               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand block">Tactical Matrix</span>
-              <h3 className="text-5xl md:text-7xl font-black tracking-tighter text-deep-green leading-none uppercase">Pest Surveillance.</h3>
+              <h3 className="text-3xl md:text-5xl font-black tracking-tighter text-deep-green leading-none uppercase">Pest Surveillance.</h3>
             </div>
             <button className="text-[12px] font-black uppercase tracking-[0.5em] text-slate-400 hover:text-brand transition-all flex items-center gap-4 group pb-4 border-b border-transparent hover:border-brand">
                Expanded Log <ArrowUpRight className="w-7 h-7 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform duration-700" />
@@ -140,7 +140,7 @@ export default function Guidance() {
                        <span className="text-[11px] font-black text-slate-300 uppercase tracking-[0.4em]">Bio-Marker Capture</span>
                        <div className={`w-3 h-3 rounded-full animate-pulse shadow-glow ${p.risk === 'Elevated' ? 'bg-rose-500 shadow-rose-500/40' : 'bg-brand'}`} />
                     </div>
-                    <h5 className="text-4xl font-black text-deep-green tracking-tighter uppercase leading-none">{p.name}</h5>
+                    <h5 className="text-2xl font-black text-deep-green tracking-tighter uppercase leading-none">{p.name}</h5>
                     <div className="flex items-center gap-6 border-b border-slate-100 pb-8">
                        <p className="text-sm font-bold text-slate-400 uppercase tracking-[0.3em]">{p.area}</p>
                        <span className="opacity-20 text-slate-400">|</span>
