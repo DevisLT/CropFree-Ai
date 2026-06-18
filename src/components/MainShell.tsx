@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Leaf, Search, Activity, ListChecks, MessageSquare, Cloud, Info, User, ChevronRight, Menu, X, Clock, LogOut, Home } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-import { useLanguage, Locale } from "../contexts/LanguageContext";
+import { useLanguage, Locale, supportedLanguages } from "../contexts/LanguageContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { auth } from "../lib/firebase";
 import { Moon, Sun, Globe } from "lucide-react";
@@ -18,38 +18,44 @@ import Account from "./account/Account";
 import Tasks from "./tasks/Tasks";
 import Coach from "./coach/Coach";
 import Guidance from "./guidance/Guidance";
+import FirstTimeTutorial from "./onboarding/FirstTimeTutorial";
 
 type Tab = "dashboard" | "doctor" | "tracker" | "tasks" | "coach" | "weather" | "guidance" | "account";
 
 const Logo = () => (
-  <div className="flex items-center gap-4 group">
-    <div className="relative w-12 h-12 flex-shrink-0">
-      <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_15px_rgba(45,106,79,0.2)] group-hover:scale-110 transition-transform duration-700">
+  <div className="flex items-center gap-3.5 group">
+    <div className="relative w-9 h-9 flex-shrink-0">
+      <svg viewBox="0 0 100 100" className="w-full h-full transition-transform duration-500 ease-out group-hover:scale-105">
         <defs>
           <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#2D6A4F" />
-            <stop offset="100%" stopColor="#FFD54F" />
+            <stop offset="0%" stopColor="#2ECC71" />
+            <stop offset="100%" stopColor="#0B3D2E" />
           </linearGradient>
         </defs>
-        <path 
-          d="M50 10 C30 30 10 50 10 70 A40 40 0 0 0 90 70 C90 50 70 30 50 10" 
+        <rect 
+          x="10" 
+          y="10" 
+          width="80" 
+          height="80" 
+          rx="24" 
           fill="url(#logoGradient)" 
         />
         <path 
-          d="M50 25 V85 M50 45 L70 35 M50 65 L30 55 M50 45 L30 35 M50 65 L70 55" 
+          d="M30 50 C30 35 40 25 50 25 C60 25 70 35 70 50 C70 65 60 75 50 75" 
           stroke="white" 
-          strokeWidth="3" 
+          strokeWidth="6" 
           strokeLinecap="round" 
           fill="none"
-          className="opacity-90"
+          className="opacity-95"
         />
+        <circle cx="50" cy="50" r="10" fill="white" />
       </svg>
     </div>
-    <div className="flex flex-col">
-      <span className="text-2xl font-black tracking-tighter leading-none text-deep-green group-hover:text-brand transition-colors">
-        CropFree <span className="opacity-60 font-medium text-brand">AI</span>
+    <div className="flex flex-col text-left">
+      <span className="text-lg font-bold tracking-tight text-white group-hover:text-brand transition-colors leading-none">
+        CropFree <span className="text-brand font-medium">AI</span>
       </span>
-      <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-slate-500 mt-1">Smart Agriculture</span>
+      <span className="text-[9px] font-semibold uppercase tracking-wider text-[#2ECC71]/60 mt-0.5">Enterprise AI</span>
     </div>
   </div>
 );
@@ -63,23 +69,18 @@ export default function MainShell() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [searchLang, setSearchLang] = useState("");
   const [showLangMenu, setShowLangMenu] = useState(false);
+  const [showFirstTimeTutorial, setShowFirstTimeTutorial] = useState(false);
 
-  const languages: { code: Locale; name: string }[] = [
-    { code: 'en', name: 'English' },
-    { code: 'fr', name: 'Français' },
-    { code: 'pt', name: 'Português' },
-    { code: 'es', name: 'Español' },
-    { code: 'ar', name: 'العربية' },
-    { code: 'zh', name: '中文' },
-    { code: 'hi', name: 'हिन्दी' },
-    { code: 'am', name: 'አማርኛ' },
-    { code: 'ha', name: 'Hausa' },
-    { code: 'yo', name: 'Yoruba' },
-    { code: 'rw', name: 'Ikinyarwanda' },
-    { code: 'sw', name: 'Kiswahili' },
-    { code: 'zu', name: 'isiZulu' },
-    { code: 'ig', name: 'Igbo' },
-  ];
+  useEffect(() => {
+    if (user) {
+      const isCompleted = localStorage.getItem("onboardingCompleted") === "true";
+      setShowFirstTimeTutorial(!isCompleted);
+    } else {
+      setShowFirstTimeTutorial(false);
+    }
+  }, [user]);
+
+  const languages = supportedLanguages;
 
   const filteredLanguages = languages.filter(l => 
     l.name.toLowerCase().includes(searchLang.toLowerCase()) || 
@@ -99,28 +100,39 @@ export default function MainShell() {
 
   if (loading) return (
     <div className="h-screen w-screen flex items-center justify-center agritech-gradient agritech-overlay">
-      <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col items-center gap-6">
         <Logo />
-        <div className="w-64 h-1.5 bg-brand-light/10 rounded-full overflow-hidden">
+        <div className="w-48 h-1 bg-brand/10 rounded-full overflow-hidden">
            <motion.div 
              initial={{ x: "-100%" }}
              animate={{ x: "100%" }}
-             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-             className="w-1/2 h-full bg-brand shadow-[0_0_15px_rgba(45,106,79,0.4)]"
+             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+             className="w-1/2 h-full bg-brand"
            />
         </div>
         <motion.div 
-          animate={{ opacity: [0.3, 1, 0.3] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="text-[11px] font-black uppercase tracking-[0.6em] text-brand"
+          animate={{ opacity: [0.4, 1, 0.4] }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+          className="text-[11px] font-medium tracking-wide text-slate-400 uppercase"
         >
-          Calibrating Biosensors...
+          {t('loading_intelligence') || "Loading intelligence dashboard..."}
         </motion.div>
       </div>
     </div>
   );
 
   if (!user) return <Onboarding />;
+
+  if (showFirstTimeTutorial) {
+    return (
+      <FirstTimeTutorial 
+        onComplete={() => {
+          localStorage.setItem("onboardingCompleted", "true");
+          setShowFirstTimeTutorial(false);
+        }} 
+      />
+    );
+  }
 
   const trialDaysLeft = profile ? differenceInDays(parseISO(profile.trialEndDate), new Date()) : 0;
   const isTrialExpired = trialDaysLeft <= 0 && profile?.subscriptionStatus === "trial";
@@ -143,90 +155,62 @@ export default function MainShell() {
           <div className="w-24 h-24 bg-amber-500/10 rounded-3xl flex items-center justify-center mb-8 rotate-12 shadow-inner border border-amber-500/20">
             <Clock className="w-10 h-10 text-amber-500" />
           </div>
-          <h2 className="text-5xl font-black mb-6 tracking-tighter text-white">Biological Access Limited</h2>
+          <h2 className="text-5xl font-black mb-6 tracking-tighter text-white">{t("trial_access_limited")}</h2>
           <p className="text-slate-400 text-xl leading-relaxed mb-12">
-            Your evaluation period has reached its final harvest. To maintain access to precision AI diagnostics, transition to our premium infrastructure.
+            {t("trial_access_limited_desc")}
           </p>
           <button 
             onClick={() => setActiveTab("account")}
             className="px-12 py-5 bg-brand text-slate-950 rounded-full font-black shadow-2xl shadow-brand/20 btn-press text-lg hover:scale-105 transition-transform"
           >
-            Upgrade Protocol — $2.99/mo
+            {t("upgrade_protocol_btn")}
           </button>
         </div>
       );
     }
 
     switch (activeTab) {
-      case "dashboard": return <Overview />;
-      case "doctor": return <CropDoctor />;
+      case "dashboard": return <Overview onNavigate={(tab) => setActiveTab(tab)} />;
+      case "doctor": return <CropDoctor onNavigate={(tab) => setActiveTab(tab as any)} />;
       case "tracker": return <RecoveryTracker />;
       case "tasks": return <Tasks />;
       case "coach": return <Coach />;
       case "weather": return <Weather />;
       case "account": return <Account />;
       case "guidance": return <Guidance />;
-      default: return <Overview />;
+      default: return <Overview onNavigate={(tab) => setActiveTab(tab)} />;
     }
   };
 
-  const FloatingLeaf = ({ delay = 0, x = "0%", y = "0%", size = 40, color = "rgba(45, 106, 79, 0.4)" }) => (
+  const AmbientGlow = ({ delay = 0, x = "0%", y = "0%", size = 300, color = "rgba(31, 107, 82, 0.03)" }) => (
     <motion.div 
-      initial={{ opacity: 0, scale: 0 }}
+      initial={{ opacity: 0 }}
       animate={{ 
-        opacity: [0.1, 0.4, 0.1],
-        scale: [1, 1.2, 1],
-        x: [0, 50, -50, 0],
-        y: [0, -30, 30, 0],
-        rotate: [0, 90, 180, 270, 360]
+        opacity: [0.3, 0.6, 0.3],
+        scale: [1, 1.1, 1],
       }}
       transition={{ 
-        duration: 20 + Math.random() * 20, 
+        duration: 12 + Math.random() * 8, 
         repeat: Infinity, 
         delay,
-        ease: "linear"
+        ease: "easeInOut"
       }}
-      style={{ left: x, top: y, position: 'absolute' }}
-      className="pointer-events-none z-0"
-    >
-      <div 
-        className="blur-3xl animate-pulse" 
-        style={{ 
-          width: size * 3, 
-          height: size * 3, 
-          background: `radial-gradient(circle, ${color} 0%, transparent 70%)` 
-        }} 
-      />
-      <Leaf 
-        style={{ width: size, height: size, color }} 
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-20 filter drop-shadow-[0_0_15px_rgba(45,106,79,0.8)]" 
-      />
-    </motion.div>
+      style={{ left: x, top: y, position: 'absolute', width: size, height: size, background: `radial-gradient(circle, ${color} 0%, transparent 70%)` }}
+      className="pointer-events-none z-0 blur-2xl"
+    />
   );
 
   return (
     <div className={`flex h-screen agritech-gradient overflow-hidden font-sans relative ${isRTL ? 'rtl' : 'ltr'}`}>
-      {/* Moving Features: Neons of Leaves & Futuristic Overlays */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-[radial-gradient(circle_at_top_right,_#40916c08_0%,_transparent_40%),radial-gradient(circle_at_bottom_left,_#D4A37308_0%,_transparent_40%)]">
-        <FloatingLeaf x="15%" y="20%" size={120} delay={0} color="#2D6A4F20" />
-        <FloatingLeaf x="85%" y="15%" size={180} delay={2} color="#40916C15" />
-        <FloatingLeaf x="75%" y="80%" size={140} delay={5} color="#D4A37310" />
-        <FloatingLeaf x="20%" y="75%" size={160} delay={8} color="#2D6A4F10" />
-        <FloatingLeaf x="50%" y="45%" size={200} delay={4} color="#40916C08" />
+      {/* Background visual depth elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <AmbientGlow x="5%" y="10%" size={400} color="rgba(31, 107, 82, 0.04)" />
+        <AmbientGlow x="75%" y="5%" size={500} color="rgba(200, 169, 107, 0.03)" />
+        <AmbientGlow x="40%" y="60%" size={600} color="rgba(31, 107, 82, 0.03)" />
         
-        {/* Futuristic Scanning Lines / Overlays */}
-        <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(45,106,79,0.1)_1px,_transparent_1px),linear-gradient(90deg,rgba(45,106,79,0.1)_1px,_transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
-        <motion.div 
-           animate={{ 
-             backgroundPosition: ['0% 0%', '0% 100%'] 
-           }}
-           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-           className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(transparent_0%,rgba(45,106,79,1)_50%,transparent_100%)] bg-[length:100%_400px] pointer-events-none"
-        />
+        {/* Crisp static dot grid array */}
+        <div className="absolute inset-0 opacity-[0.4] agritech-overlay" />
       </div>
-
-      {/* Visual Overlay for Depth */}
-      <div className="absolute inset-0 pointer-events-none opacity-20 agritech-overlay" />
 
       {/* Mobile Sidebar Overlay */}
       {isMobile && isSidebarOpen && (
@@ -242,25 +226,25 @@ export default function MainShell() {
       <motion.aside
         initial={false}
         animate={{ 
-          width: isMobile ? (isSidebarOpen ? "85%" : 0) : (isSidebarOpen ? 400 : 0),
+          width: isMobile ? (isSidebarOpen ? "85%" : 0) : (isSidebarOpen ? 280 : 0),
           opacity: isSidebarOpen ? 1 : 0,
-          x: isMobile && !isSidebarOpen ? (isRTL ? 400 : -400) : 0
+          x: isMobile && !isSidebarOpen ? (isRTL ? 300 : -300) : 0
         }}
         style={{ right: isRTL && isMobile ? 0 : 'auto', left: !isRTL && isMobile ? 0 : 'auto' }}
-        className={`bg-white/90 backdrop-blur-3xl border-r border-brand/10 flex flex-col shadow-2xl z-[70] ${
-          isMobile ? "fixed inset-y-0" : "relative"
+        className={`bg-bg-sidebar border-r border-border-main backdrop-blur-2xl flex flex-col z-[70] lg:my-3 lg:ml-3 lg:rounded-2xl lg:overflow-hidden lg:border ${
+          isMobile ? "fixed inset-y-0 shadow-2xl bg-bg-sidebar" : "relative shadow-2xl dark:shadow-black/80 shadow-slate-200/50"
         }`}
       >
-        <div className="p-10 md:p-12 flex items-center justify-between">
+        <div className="p-6 flex items-center justify-between border-b border-border-main">
           <Logo />
           {isMobile && (
-            <button onClick={() => setIsSidebarOpen(false)} className="p-3 bg-brand/5 rounded-2xl text-deep-green">
-              <X className="w-5 h-5" />
+            <button onClick={() => setIsSidebarOpen(false)} className="p-2 hover:bg-white/[0.05] rounded-xl text-text-muted hover:text-text-heading transition-colors cursor-pointer">
+              <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
-        <nav className="flex-1 px-8 py-6 md:py-10 space-y-3 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -268,20 +252,20 @@ export default function MainShell() {
                 setActiveTab(item.id as Tab);
                 if (isMobile) setIsSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-5 px-8 py-5 rounded-[24px] transition-all duration-700 group relative overflow-hidden ${
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 group relative cursor-pointer ${
                 activeTab === item.id 
-                  ? "bg-brand text-white shadow-[0_15px_35px_rgba(45,106,79,0.25)]" 
-                  : "text-slate-500 hover:bg-brand/5 hover:text-deep-green"
+                  ? "bg-[#2ECC71]/10 text-brand font-bold shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]" 
+                  : "text-text-muted hover:bg-black/[0.01] dark:hover:bg-white/[0.03] hover:text-text-main"
               }`}
             >
-              <item.icon className={`w-5 h-5 transition-transform group-hover:scale-110 ${activeTab === item.id ? "text-white" : "text-brand/40"}`} />
-              <span className={`font-black text-[13px] uppercase tracking-[0.3em] ${activeTab === item.id ? "translate-x-2" : ""} transition-transform`}>
+              <item.icon className={`w-4 h-4 flex-shrink-0 transition-colors ${activeTab === item.id ? "text-brand" : "text-text-muted/80 group-hover:text-text-main"}`} />
+              <span className="text-[13.5px] font-semibold tracking-normal text-left flex-1 truncate">
                 {item.label}
               </span>
               {activeTab === item.id && (
                 <motion.div 
                   layoutId="sidebarActive"
-                  className="absolute left-0 top-4 bottom-4 w-1.5 bg-white rounded-full" 
+                  className="absolute left-0 top-3 bottom-3 w-1 bg-brand rounded-r" 
                 />
               )}
             </button>
@@ -289,55 +273,55 @@ export default function MainShell() {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-10 border-t border-brand/5 space-y-8">
-           <div className="flex items-center gap-4">
+        <div className="p-4 border-t border-border-main space-y-2.5 bg-[#000000]/[0.01] dark:bg-[#000000]/10">
+           <div className="flex items-center gap-2">
              <button 
                onClick={toggleTheme}
-               className="flex-1 p-5 bg-brand/5 rounded-2xl flex items-center justify-center gap-4 text-[11px] font-black uppercase tracking-widest transition-all text-deep-green border border-brand/10 hover:bg-brand/10"
+               className="flex-1 py-2 px-3 bg-[#000000]/[0.02] dark:bg-white/[0.03] hover:bg-[#000000]/[0.05] dark:hover:bg-white/[0.08] rounded-xl flex items-center justify-center gap-2 text-xs font-semibold tracking-normal transition-colors text-text-muted hover:text-text-heading border border-border-main cursor-pointer"
              >
-               {theme === 'light' ? <Moon className="w-5 h-5 text-accent" /> : <Sun className="w-5 h-5 text-accent" />}
-               {theme === 'light' ? 'NIGHT NODE' : 'DAY NODE'}
+               {theme === 'light' ? <Moon className="w-3.5 h-3.5 text-text-muted" /> : <Sun className="w-3.5 h-3.5 text-brand" />}
+               <span>{theme === 'light' ? t("dark_mode_toggle") : t("light_mode_toggle")}</span>
              </button>
              
              <button 
                onClick={() => auth.signOut()}
-               className="p-5 bg-rose-500/5 text-rose-500 hover:bg-rose-500 hover:text-white transition-all rounded-2xl border border-rose-500/10"
-               title="Emergency Termination"
+               className="p-2 bg-[#000000]/[0.01] dark:bg-white/[0.03] text-text-muted hover:bg-rose-500/10 hover:text-rose-500 transition-colors rounded-xl border border-border-main cursor-pointer"
+               title="Sign Out"
              >
-               <LogOut className="w-5 h-5" />
+               <LogOut className="w-3.5 h-3.5" />
              </button>
            </div>
 
            <div className="relative">
              <button 
                onClick={() => setShowLangMenu(!showLangMenu)}
-               className="w-full p-5 bg-white border border-brand/10 rounded-2xl flex items-center justify-between text-[11px] font-black uppercase tracking-widest transition-all text-slate-500 hover:border-brand/40 shadow-sm"
+               className="w-full py-2 px-3 bg-bg-dark border border-border-main rounded-xl flex items-center justify-between text-xs font-semibold tracking-normal transition-all duration-200 text-text-muted hover:text-text-heading hover:border-[#2ECC71]/40 shadow-soft cursor-pointer"
              >
-               <div className="flex items-center gap-4">
-                 <Globe className="w-5 h-5 text-brand" />
-                 <span>LOCALE</span>
+               <div className="flex items-center gap-2">
+                 <Globe className="w-3.5 h-3.5 text-slate-400" />
+                 <span>{t("language")}</span>
                </div>
-               <span className="text-deep-green">{locale.toUpperCase()}</span>
+               <span className="text-brand uppercase text-[10.5px] font-bold">{locale}</span>
              </button>
 
              <AnimatePresence>
                {showLangMenu && (
                  <motion.div
-                   initial={{ opacity: 0, y: 10 }}
+                   initial={{ opacity: 0, y: 5 }}
                    animate={{ opacity: 1, y: 0 }}
-                   exit={{ opacity: 0, y: 10 }}
-                   className="absolute bottom-full left-0 right-0 mb-4 bg-slate-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden z-[100] max-h-[300px] flex flex-col backdrop-blur-3xl"
+                   exit={{ opacity: 0, y: 5 }}
+                   className="absolute bottom-full left-0 right-0 mb-2 bg-[#0F131C]/95 border border-white/[0.06] backdrop-blur-xl rounded-xl shadow-premium overflow-hidden z-[100] max-h-[220px] flex flex-col"
                  >
-                   <div className="p-4 border-b border-white/5">
+                   <div className="p-2 border-b border-[#EAEFED]">
                      <input 
                        type="text" 
-                       placeholder="Filter protocols..."
+                       placeholder={t("filter_languages")}
                        value={searchLang}
                        onChange={(e) => setSearchLang(e.target.value)}
-                       className="w-full p-3 bg-white/5 rounded-xl text-[10px] font-bold text-white focus:ring-1 focus:ring-brand outline-none"
+                       className="w-full p-2 bg-white/[0.03] border border-white/[0.05] rounded-xl text-xs font-semibold text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-brand"
                      />
                    </div>
-                   <div className="overflow-y-auto custom-scrollbar p-2">
+                   <div className="overflow-y-auto custom-scrollbar p-1.5 space-y-0.5 bg-[#0F131C]/60">
                      {filteredLanguages.map((l) => (
                        <button
                          key={l.code}
@@ -345,10 +329,10 @@ export default function MainShell() {
                            setLocale(l.code);
                            setShowLangMenu(false);
                          }}
-                         className={`w-full px-5 py-3 text-left text-[10px] font-black uppercase tracking-widest transition-colors rounded-xl mb-1 ${
+                         className={`w-full px-3 py-1.5 text-left text-xs font-semibold transition-colors rounded-lg cursor-pointer ${
                            locale === l.code 
-                             ? 'bg-brand text-slate-950' 
-                             : 'text-slate-500 hover:bg-white/5 hover:text-white'
+                             ? 'bg-brand/10 text-brand font-bold' 
+                             : 'text-slate-300 hover:bg-white/[0.03] hover:text-white'
                          }`}
                        >
                          {l.name}
@@ -365,51 +349,49 @@ export default function MainShell() {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto relative custom-scrollbar flex flex-col h-full bg-transparent">
         {/* Header (Adaptive) */}
-        <header className="sticky top-0 z-40 bg-white/70 backdrop-blur-3xl px-6 md:px-16 py-6 md:py-12 flex items-center justify-between border-b border-brand/5">
-          <div className="flex items-center gap-8 md:gap-12">
+        <header className="sticky top-0 z-40 bg-bg-header backdrop-blur-md px-6 md:px-8 py-4 flex items-center justify-between border-b border-border-main">
+          <div className="flex items-center gap-4">
             {!isSidebarOpen && (
               <button 
                 onClick={() => setIsSidebarOpen(true)}
-                className="p-4 bg-brand/5 text-brand hover:bg-brand hover:text-white rounded-2xl border border-brand/10 transition-all btn-press group"
+                className="p-2 bg-[#000000]/[0.02] dark:bg-white/[0.03] text-text-muted hover:text-text-heading rounded-xl border border-border-main transition-all btn-press cursor-pointer"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-4 h-4" />
               </button>
             )}
-            <div className="flex flex-col">
-              <span className="text-[11px] font-black text-brand uppercase tracking-[0.6em] hidden md:block mb-2">Protocol Interface</span>
-              <h1 className="text-3xl md:text-6xl font-black text-deep-green tracking-tighter leading-none capitalize">
-                {t(activeTab)}.
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-text-muted hidden sm:block">{t("workspace")}</span>
+              <span className="text-xs font-semibold text-text-muted/60 hidden sm:block">/</span>
+              <h1 className="text-base font-bold text-text-heading capitalize leading-none">
+                {t(activeTab)}
               </h1>
             </div>
           </div>
           
-          <div className="flex items-center gap-6 md:gap-12">
-            <div className="hidden lg:flex flex-col text-right">
-              <span className="text-[15px] font-black text-deep-green tracking-tight">{profile?.fullName}</span>
-              <span className="text-[10px] font-black text-brand-light uppercase tracking-[0.4em] mt-1">{profile?.subscriptionStatus} NODE</span>
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex flex-col text-right">
+              <span className="text-xs font-bold text-text-main">{profile?.fullName}</span>
+              <span className="text-[9px] font-bold text-brand uppercase tracking-wider mt-0.5">{profile?.subscriptionStatus === 'active' ? t("supreme_plan") : t("trial_plan")}</span>
             </div>
             <div 
               onClick={() => setActiveTab("account")}
-              className="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-brand to-accent p-[3px] rounded-[32px] cursor-pointer hover:rotate-6 transition-all duration-700 group shadow-lg"
+              className="w-8 h-8 rounded-full bg-[#2ECC71]/10 border border-[#2ECC71]/20 flex items-center justify-center cursor-pointer hover:border-brand transition-colors"
             >
-               <div className="w-full h-full bg-white rounded-[29px] flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-brand/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="text-xl md:text-3xl font-black text-brand relative z-10">
-                    {profile?.fullName[0]}
-                  </span>
-               </div>
+              <span className="text-xs font-bold text-brand uppercase">
+                {profile?.fullName ? profile.fullName[0] : 'U'}
+              </span>
             </div>
           </div>
         </header>
 
-        <div className="px-6 md:px-16 pb-32 md:pb-20 pt-12 flex-1 relative z-10 overflow-x-hidden">
+        <div className="px-5 md:px-8 pb-24 md:pb-12 pt-6 flex-1 relative z-10 overflow-x-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="max-w-7xl mx-auto"
             >
               {renderContent()}
@@ -419,31 +401,25 @@ export default function MainShell() {
 
         {/* Mobile Bottom Navigation */}
         {isMobile && (
-          <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 border-t border-brand/10 px-10 py-6 flex items-center justify-between backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)]">
+          <nav className="fixed bottom-0 left-0 right-0 z-50 bg-bg-header backdrop-blur-md border-t border-border-main px-6 py-3.5 flex items-center justify-between shadow-premium">
             {[
-              { id: "dashboard", icon: Activity, label: "Core" },
-              { id: "doctor", icon: Search, label: "Scan" },
-              { id: "tracker", icon: Leaf, label: "Bio" },
-              { id: "tasks", icon: ListChecks, label: "Intel" },
-              { id: "account", icon: User, label: "Node" },
+              { id: "dashboard", icon: Activity, label: t("dashboard_short") },
+              { id: "doctor", icon: Search, label: t("scan_short") },
+              { id: "tracker", icon: Leaf, label: t("crops_short") },
+              { id: "tasks", icon: ListChecks, label: t("plan_short") },
+              { id: "account", icon: User, label: t("you_short") },
             ].map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as Tab)}
-                className={`flex flex-col items-center gap-2 transition-all relative ${
-                  activeTab === item.id ? "text-brand" : "text-slate-400"
+                className={`flex flex-col items-center gap-1 transition-colors ${
+                  activeTab === item.id ? "text-brand font-bold" : "text-text-muted"
                 }`}
               >
-                <item.icon className={`w-7 h-7 ${activeTab === item.id ? "drop-shadow-[0_0_12px_rgba(45,106,79,0.3)]" : ""}`} />
-                <span className="text-[10px] font-black uppercase tracking-widest">
+                <item.icon className="w-5 h-5" />
+                <span className="text-[9px] font-bold uppercase tracking-wider">
                   {item.label}
                 </span>
-                {activeTab === item.id && (
-                  <motion.div 
-                    layoutId="mobileNavActive"
-                    className="absolute -top-3 w-10 h-1.5 bg-brand rounded-full"
-                  />
-                )}
               </button>
             ))}
           </nav>

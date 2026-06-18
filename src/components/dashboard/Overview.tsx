@@ -7,7 +7,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { OperationType, handleFirestoreError } from "../../lib/errorHandlers";
 import { useLanguage } from "../../contexts/LanguageContext";
 
-export default function Overview() {
+export default function Overview({ onNavigate }: { onNavigate?: (tab: "dashboard" | "doctor" | "tracker" | "tasks" | "coach" | "weather" | "guidance" | "account") => void }) {
   const { t, isRTL } = useLanguage();
   const [stats, setStats] = useState({ total: 0, healthy: 0, recovering: 0 });
   const [recentCrops, setRecentCrops] = useState<any[]>([]);
@@ -37,102 +37,81 @@ export default function Overview() {
   }, []);
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-8">
       {/* Hero Welcome Section */}
-      <section className="relative min-h-[400px] rounded-[64px] overflow-hidden group shadow-2xl border border-white/60 bg-white/40 backdrop-blur-3xl flex">
-        <div className="absolute inset-0 z-0">
-           {/* Moving Natural Elements */}
-           <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
-              {[...Array(8)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ 
-                    x: Math.random() * 100 + "%", 
-                    y: Math.random() * 100 + "%", 
-                    rotate: Math.random() * 360,
-                    opacity: 0 
-                  }}
-                  animate={{ 
-                    y: ["-10%", "110%"],
-                    x: ["-5%", "5%"],
-                    rotate: [0, 360],
-                    opacity: [0, 1, 1, 0]
-                  }}
-                  transition={{ 
-                    duration: 20 + Math.random() * 15, 
-                    repeat: Infinity, 
-                    delay: Math.random() * 10,
-                    ease: "linear" 
-                  }}
-                  className="absolute"
-                >
-                  <Leaf className="w-32 h-32 text-brand blur-[1px]" />
-                </motion.div>
-              ))}
-           </div>
-           <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-white/80 via-white/40 to-transparent z-10" />
-           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand/10 to-transparent z-10" />
+      <section className="relative p-8 md:p-12 rounded-2xl border border-[#EAEFED] bg-white overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6 shadow-soft">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-brand/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 max-w-2xl">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-brand/5 border border-brand/10 text-brand text-xs font-semibold rounded-full mb-4">
+            <span className="w-1.5 h-1.5 bg-brand rounded-full" />
+            <span>{t('field_overview')}</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight mb-3">
+             {t('good_morning')}
+          </h2>
+          <p className="text-slate-500 text-base leading-relaxed mb-6">
+            {t('promising_growth')}
+          </p>
+          
+          {/* Start Button to direct to Crop Doctor */}
+          <button 
+            onClick={() => onNavigate && onNavigate("doctor")}
+            className="px-5 py-2.5 bg-brand text-white rounded-lg font-medium text-sm transition-all hover:bg-brand-deep shadow-soft btn-press flex items-center gap-2"
+          >
+            <Search className="w-4 h-4" />
+            <span>{t('start_crop_scan')}</span>
+          </button>
         </div>
         
-        <div className="relative z-20 w-full flex flex-col justify-center p-12 md:p-24">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-4xl"
-          >
-            <div className="flex items-center gap-5 mb-8">
-              <div className="w-14 h-1 flex bg-brand rounded-full" />
-              <span className="text-[11px] font-black uppercase tracking-[0.6em] text-brand">{t('field_overview')}</span>
-            </div>
-            <h2 className="text-4xl md:text-7xl font-black heading-tight mb-10 text-deep-green drop-shadow-sm">
-               {t('good_morning')}.
-            </h2>
-            <p className="text-slate-500 max-w-2xl text-lg md:text-2xl font-medium leading-relaxed">
-              {t('promising_growth') || "Your fields are showing signs of robust development today."}
-            </p>
-          </motion.div>
+        {/* Quick Health Stats Mini-Widget */}
+        <div className="relative z-10 p-5 bg-slate-50 border border-[#EAEFED] rounded-xl flex items-center gap-4 w-full md:w-auto min-w-[240px]">
+          <div className="w-10 h-10 bg-brand/10 rounded-lg flex items-center justify-center text-brand">
+            <Leaf className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-xs text-slate-400 block font-medium">{t('diagnostic_status')}</span>
+            <span className="text-sm font-bold text-slate-950">{t('biosphere_score')}</span>
+          </div>
         </div>
       </section>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
         <div className="md:col-span-3">
-          <StatCard label={t('total_diagnoses')} value={stats.total} icon={Leaf} color="bg-brand/10 text-brand" description={t('crop_care')} badge="Core Stats" />
+          <StatCard label={t('total_diagnoses')} value={stats.total} icon={Leaf} color="bg-brand/5 text-brand" description={t('crop_care')} badge={t('diagnostics_log')} />
         </div>
         <div className="md:col-span-2">
-          <StatCard label={t('active_recovery')} value={stats.recovering} icon={TrendingUp} color="bg-accent/10 text-accent" description={t('recovering_robust')} badge="AI Tracker" />
+          <StatCard label={t('active_recovery')} value={stats.recovering} icon={TrendingUp} color="bg-accent/5 text-accent" description={t('recovering_robust')} badge={t('recovery_status_badge')} />
         </div>
         
         {/* New Feature Cards Section */}
-        <div className="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-           <FeatureCard title="Soil Matrix" desc="Neural lithosphere analysis." icon={Search} status="Optimization Active" color="brand" />
-           <FeatureCard title="Pest Radar" desc="High-res biotic surveillance." icon={AlertCircle} status="Nominal State" color="accent" />
-           <FeatureCard title="Growth Logic" desc="Yield-based decision engine." icon={TrendingUp} status="Synced" color="emerald-500" />
-           <FeatureCard title="Bio-Check" desc="Genetic signature audit." icon={Activity} status="Secure" color="brand" />
+        <div className="md:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+           <FeatureCard title={t('soil_profile')} desc={t('soil_profile_desc')} icon={Search} status={t('level_excellent')} color="brand" />
+           <FeatureCard title={t('pest_activity')} desc={t('pest_activity_desc')} icon={AlertCircle} status={t('low_risk')} color="brand" />
+           <FeatureCard title={t('yield_forecast')} desc={t('yield_forecast_desc')} icon={TrendingUp} status={t('level_good_balance')} color="accent" />
+           <FeatureCard title={t('crop_health')} desc={t('crop_health_desc')} icon={Activity} status={t('safe_status')} color="brand" />
         </div>
 
         <div className="md:col-span-5">
-           <div className="premium-card p-12 md:p-16 flex flex-col md:flex-row md:items-center justify-between gap-12 relative overflow-hidden group border border-white/60 bg-white/40 backdrop-blur-3xl">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-brand/5 rounded-full blur-[120px] group-hover:bg-brand/10 transition-all duration-[2s]" />
-            <div className="relative z-10">
-              <span className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-400 mb-6 block">{t('health_score')}</span>
-              <div className="flex items-baseline gap-8">
-                 <span className="text-5xl md:text-7xl font-black text-deep-green leading-none tracking-tighter">
+           <div className="premium-card p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden bg-white rounded-xl border border-[#EAEFED]">
+            <div className="relative z-10 space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">{t('active_observations')}</span>
+              <div className="flex items-baseline gap-4">
+                 <span className="text-3xl md:text-5xl font-bold text-slate-900 leading-none">
                    {recentCrops.filter(c => c.status === 'Worsening').length}
                  </span>
                  <div className="flex flex-col">
-                    <span className="text-2xl md:text-3xl font-black text-deep-green">Observations</span>
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-2">Active Protocol Warnings</span>
+                    <span className="text-sm font-semibold text-slate-800">{t('crops_warning_signs')}</span>
+                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-wide">{t('requiring_attention')}</span>
                  </div>
               </div>
             </div>
             <div className="relative z-10 max-w-lg">
-               <div className="p-8 bg-white/40 border border-white/60 rounded-[32px] backdrop-blur-md shadow-inner">
-                 <p className="text-xl font-medium leading-relaxed text-slate-600 border-l-4 border-brand/40 pl-8">
+               <div className="p-4 bg-slate-50 border border-[#EAEFED] rounded-lg">
+                 <p className="text-sm font-medium leading-relaxed text-slate-500 border-l-2 border-brand/50 pl-4">
                    {recentCrops.filter(c => c.status === 'Worsening').length > 0 
-                     ? "Biometric stress detected in recent crops. Implementation of precision remedial sequences recommended."
-                     : "Agricultural biosphere remains stable. All vegetative parameters within optimal range."}
+                     ? t('overview_stress_detected')
+                     : t('overview_status_stable')}
                  </p>
                </div>
             </div>
@@ -141,142 +120,138 @@ export default function Overview() {
       </div>
 
       {/* Weather Intel & Activity */}
-      <div className="grid grid-cols-1 xl:grid-cols-11 gap-10">
-        <div className="xl:col-span-7 premium-card p-12 md:p-16 border border-white/60">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 mb-16">
-            <div className="space-y-2">
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand mb-2 block">Diagnostic Pulse</span>
-              <h3 className="text-3xl md:text-5xl font-black text-deep-green tracking-tighter">Activity Stream.</h3>
+      <div className="grid grid-cols-1 xl:grid-cols-11 gap-6">
+        <div className="xl:col-span-7 premium-card p-6 sm:p-8 border border-[#EAEFED] bg-white rounded-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand mb-1 block">{t('activity_stream')}</span>
+              <h3 className="text-lg font-bold text-slate-950">{t('scan_timeline')}</h3>
             </div>
-            <div className="px-8 py-4 bg-brand/5 rounded-full text-[10px] font-black uppercase tracking-widest text-brand border border-brand/10 flex items-center gap-4">
-               <div className="w-2.5 h-2.5 bg-brand rounded-full animate-pulse shadow-[0_0_15px_#00ff88]" />
-               Biosphere Uplink
+            <div className="px-3 py-1.5 bg-brand/5 rounded-full text-[10px] font-semibold uppercase tracking-wider text-brand border border-brand/10 flex items-center gap-2">
+               <div className="w-1.5 h-1.5 bg-brand rounded-full animate-pulse" />
+               {t('realtime_uplink')}
             </div>
           </div>
           
-          <div className="h-[360px] w-full">
+          <div className="h-[280px] w-full">
              <ResponsiveContainer width="100%" height="100%">
-               <LineChart data={Array.from({length: 12}, (_, i) => ({ n: i, c: Math.floor(Math.random() * 10) + 5}))}>
-                  <defs>
-                    <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#2D6A4F" />
-                      <stop offset="100%" stopColor="#FFD54F" />
-                    </linearGradient>
-                  </defs>
-                  <Line 
-                    type="monotone" 
-                    dataKey="c" 
-                    stroke="url(#lineGradient)" 
-                    strokeWidth={10} 
-                    dot={{ r: 10, fill: "white", stroke: "#2D6A4F", strokeWidth: 4 }}
-                    activeDot={{ r: 14, fill: "#2D6A4F", strokeWidth: 8, stroke: "white" }} 
-                  />
-                  <XAxis hide />
-                  <YAxis hide />
-                  <Tooltip 
-                    contentStyle={{ backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '24px', boxShadow: '0 10px 40px rgba(0,0,0,0.05)' }}
-                    itemStyle={{ color: '#2D6A4F', fontWeight: '900', textTransform: 'uppercase', fontSize: '10px' }}
-                  />
-               </LineChart>
+                <LineChart data={Array.from({length: 12}, (_, i) => ({ n: i, c: Math.floor(Math.random() * 8) + 4}))}>
+                   <defs>
+                     <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                       <stop offset="0%" stopColor="#1F6B52" />
+                       <stop offset="100%" stopColor="#C8A96B" />
+                     </linearGradient>
+                   </defs>
+                   <Line 
+                     type="monotone" 
+                     dataKey="c" 
+                     stroke="url(#lineGradient)" 
+                     strokeWidth={2.5} 
+                     dot={{ r: 4, fill: "white", stroke: "#1F6B52", strokeWidth: 1.5 }}
+                     activeDot={{ r: 6, fill: "#1F6B52", strokeWidth: 2, stroke: "white" }} 
+                   />
+                   <XAxis hide />
+                   <YAxis hide />
+                   <Tooltip 
+                     contentStyle={{ backgroundColor: 'white', border: '1px solid #EAEFED', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}
+                     itemStyle={{ color: '#1F6B52', fontWeight: '500', textTransform: 'uppercase', fontSize: '11px' }}
+                   />
+                </LineChart>
              </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="xl:col-span-4 premium-card p-12 md:p-16 bg-deep-green text-white relative overflow-hidden flex flex-col justify-between shadow-2xl border-none">
-           <div className="absolute top-0 right-0 w-96 h-96 bg-brand/20 rounded-full blur-[100px]" />
-           <div className="absolute bottom-0 left-0 w-80 h-80 bg-accent/20 rounded-full blur-[120px]" />
+        <div className="xl:col-span-4 premium-card p-6 sm:p-8 bg-[#18211D] text-white relative overflow-hidden flex flex-col justify-between shadow-premium border-none rounded-xl">
+           <div className="absolute top-0 right-0 w-88 h-88 bg-brand/10 rounded-full blur-3xl pointer-events-none" />
            
            <div className="relative z-10">
-             <span className="text-[11px] font-black uppercase tracking-[0.5em] text-brand mb-6 block">Planetary Environment</span>
-             <div className="flex items-end gap-8 pb-16 border-b border-white/5 mb-12">
-               <span className="text-6xl md:text-8xl font-black tracking-tighter leading-none drop-shadow-xl">24°</span>
-               <div className="flex flex-col pb-6">
-                 <span className="text-[11px] font-black uppercase tracking-[0.3em] text-brand mb-1">Station 042</span>
-                 <span className="text-2xl font-black text-white/80 tracking-tight">Kigali, RW</span>
-               </div>
+             <span className="text-xs font-semibold uppercase tracking-wider text-[#C8A96B] mb-4 block">{t('kigali_weather_station')}</span>
+             <div className="flex items-end gap-4 pb-6 border-b border-white/5 mb-6">
+                <span className="text-5xl font-bold tracking-tight leading-none text-white">24°</span>
+                <div className="flex flex-col pb-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#C8A96B] mb-0.5">{t('station_region')}</span>
+                  <span className="text-sm font-medium text-white/80 tracking-tight">Kigali, Rwanda</span>
+                </div>
              </div>
              
-             <div className="grid grid-cols-2 gap-12">
-               <div className="space-y-4">
-                 <div className="flex items-center gap-4 text-white/20">
-                   <Thermometer className="w-5 h-5" />
-                   <span className="text-[10px] font-black uppercase tracking-widest">Feels Like</span>
-                 </div>
-                 <p className="text-4xl font-black">26°C</p>
-               </div>
-               <div className="space-y-4">
-                 <div className="flex items-center gap-4 text-white/20">
-                   <Droplets className="w-5 h-5" />
-                   <span className="text-[10px] font-black uppercase tracking-widest">Humidity</span>
-                 </div>
-                 <p className="text-4xl font-black">65%</p>
-               </div>
+             <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-white/40">
+                    <Thermometer className="w-4 h-4 text-[#C8A96B]" />
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50">{t('feels_like')}</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">26°C</p>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-white/40">
+                    <Droplets className="w-4 h-4 text-[#8FBFA8]" />
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-white/50">{t('humidity')}</span>
+                  </div>
+                  <p className="text-xl font-bold text-white">65%</p>
+                </div>
              </div>
            </div>
 
-           <div className="relative z-10 mt-16 p-10 bg-white/5 rounded-[40px] border border-white/5 backdrop-blur-xl">
-              <p className="text-lg font-medium text-white/60 leading-relaxed">
-               "Thermal equilibrium maintained. Current infrared levels optimal for bio-synthetic cellular expansion."
+           <div className="relative z-10 mt-6 p-4 bg-white/5 rounded-lg border border-white/5 backdrop-blur-sm">
+              <p className="text-xs font-medium text-white/60 leading-relaxed border-l border-brand/40 pl-3">
+               {t('weather_advice_warm')}
               </p>
            </div>
         </div>
       </div>
 
       {/* Monitoring Section */}
-      <section className="space-y-12">
-          <div className="flex items-end justify-between px-8">
-            <div className="space-y-2">
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-brand block">Live Biosecurity</span>
-              <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-deep-green">Recent Diagnostics.</h3>
+      <section className="space-y-6">
+          <div className="flex items-end justify-between px-2">
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-brand block">{t('live_management')}</span>
+              <h3 className="text-lg font-bold text-slate-950">{t('recent_diagnostic_scans')}</h3>
             </div>
-            <button className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-brand transition-all pb-2 group flex items-center gap-3 border-b border-transparent hover:border-brand">
-              Deep Analytics <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            <button onClick={() => onNavigate && onNavigate("doctor")} className="text-xs font-semibold text-slate-500 hover:text-brand transition-colors flex items-center gap-1.5 pb-1 border-b border-transparent hover:border-brand">
+              {t('view_all_history')} <ArrowUpRight className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {recentCrops.length > 0 ? recentCrops.map((crop, i) => (
               <motion.div 
                 key={crop.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="premium-card p-6 group cursor-pointer border border-white/60"
+                transition={{ delay: i * 0.05, duration: 0.3 }}
+                className="premium-card p-4 group cursor-pointer border border-[#EAEFED]"
               >
-                <div className="relative aspect-[3/4] rounded-[32px] overflow-hidden mb-8 shadow-2xl">
-                  <img src={crop.imageUrl} className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-125" alt={crop.name} referrerPolicy="no-referrer" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-deep-green/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  <div className="absolute top-6 left-6">
-                    <div className="px-6 py-2.5 bg-white/90 backdrop-blur-xl rounded-full text-[10px] font-black uppercase tracking-widest border border-white shadow-2xl text-deep-green">
-                      {crop.disease}
-                    </div>
+                <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4 shadow-soft">
+                  <img src={crop.imageUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt={crop.name} referrerPolicy="no-referrer" />
+                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide shadow-sm text-slate-800 border border-[#EAEFED]">
+                    {crop.disease}
                   </div>
                 </div>
                 
-                <div className="px-4 pb-4">
-                  <h4 className="font-black text-3xl text-deep-green mb-3 tracking-tighter truncate">{crop.name}</h4>
+                <div className="px-1">
+                  <h4 className="font-bold text-base text-slate-900 mb-2 truncate">{crop.name}</h4>
                   <div className="flex items-center justify-between">
-                     <span className={`text-[11px] font-black uppercase tracking-widest ${
+                     <span className={`text-[10.5px] font-bold uppercase tracking-wider ${
                        crop.status === 'Recovered' ? 'text-brand' : 'text-slate-400'
                      }`}>
                        {crop.status}
                      </span>
-                     <div className={`w-3.5 h-3.5 rounded-full ${
-                       crop.status === 'Recovered' ? 'bg-brand shadow-[0_0_15px_#00ff88]' : 
-                       crop.status === 'Worsening' ? 'bg-rose-500 shadow-[0_0_15px_#f43f5e]' : 'bg-slate-200'
+                     <div className={`w-2 h-2 rounded-full ${
+                       crop.status === 'Recovered' ? 'bg-brand' : 
+                       crop.status === 'Worsening' ? 'bg-rose-500' : 'bg-slate-300'
                      }`} />
                   </div>
                 </div>
               </motion.div>
             )) : (
-              <div className="col-span-full py-48 text-center premium-card border-dashed border-2 border-slate-200 bg-white/20">
-                <div className="w-28 h-28 bg-brand/5 flex items-center justify-center rounded-[40px] mx-auto mb-10 border border-brand/10 rotate-12 group-hover:rotate-0 transition-all duration-700 shadow-2xl">
-                  <Search className="w-12 h-12 text-brand" />
+              <div className="col-span-full py-16 text-center border-dashed border border-slate-200 bg-white rounded-xl">
+                <div className="w-16 h-16 bg-brand/5 flex items-center justify-center rounded-xl mx-auto mb-4 border border-brand/10">
+                  <Search className="w-6 h-6 text-brand" />
                 </div>
-                <h4 className="text-4xl font-black mb-6 text-deep-green">No Genetic Records Detected.</h4>
-                <p className="text-slate-500 text-xl font-medium max-w-md mx-auto mb-16 leading-relaxed">Begin your journey by initializing your first precision crop diagnosis.</p>
-                <button className="px-16 py-6 bg-deep-green text-white rounded-full font-black text-xs uppercase tracking-widest btn-press shadow-[0_20px_40px_rgba(8,28,21,0.2)] hover:scale-110 active:scale-95 transition-all">Start Diagnosis</button>
+                <h4 className="text-lg font-bold mb-2 text-slate-900">{t('no_scans_found')}</h4>
+                <p className="text-slate-500 text-sm max-w-sm mx-auto mb-6 leading-relaxed">{t('no_scans_desc')}</p>
+                <button onClick={() => onNavigate && onNavigate("doctor")} className="px-5 py-2.5 bg-brand text-white rounded-lg font-medium text-xs transition-colors hover:bg-brand-deep shadow-soft">{t('start_crop_scan')}</button>
               </div>
             )}
           </div>
@@ -285,58 +260,54 @@ export default function Overview() {
   );
 }
 
-function FeatureCard({ title, desc, icon: Icon, status, color }: any) {
+function FeatureCard({ title, desc, icon: Icon, status }: any) {
+  const { t } = useLanguage();
   return (
-    <motion.div 
-      whileHover={{ y: -10, scale: 1.02 }}
-      className="premium-card p-10 bg-white/40 border-4 border-white backdrop-blur-3xl rounded-[48px] shadow-2xl relative overflow-hidden group flex flex-col justify-between"
-    >
-       <div className="absolute top-0 right-0 p-8">
-          <div className="flex items-center gap-2 px-4 py-1.5 bg-brand/5 rounded-full border border-brand/10">
-             <div className="w-2 h-2 bg-brand rounded-full animate-pulse" />
-             <span className="text-[9px] font-black text-brand uppercase tracking-widest">AI NODE</span>
+    <div className="premium-card p-5 bg-white border border-[#EAEFED] rounded-xl shadow-soft relative overflow-hidden group flex flex-col justify-between">
+       <div className="absolute top-5 right-5">
+          <div className="flex items-center gap-1.5 px-2 py-0.5 bg-brand/5 rounded-full border border-brand/10">
+             <div className="w-1.5 h-1.5 bg-brand rounded-full animate-pulse" />
+             <span className="text-[8px] font-bold text-brand uppercase tracking-wider">AI</span>
           </div>
        </div>
-       <div className={`w-16 h-16 rounded-2xl bg-${color}/10 border border-${color}/20 flex items-center justify-center mb-10 group-hover:rotate-12 transition-transform duration-700 shadow-xl`}>
-          <Icon className={`w-8 h-8 text-${color}`} />
+       <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center mb-6">
+          <Icon className="w-4 h-4 text-brand" />
        </div>
        <div>
-          <h4 className="text-3xl font-black text-deep-green tracking-tighter leading-none mb-3 uppercase">{title}</h4>
-          <p className="text-sm font-bold text-slate-400 leading-tight mb-8 opacity-70">{desc}</p>
-          <div className="flex items-center gap-3">
-             <span className="text-[10px] font-black text-brand-light uppercase tracking-widest">{status}</span>
-             <ChevronRight className="w-4 h-4 text-brand-light opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all" />
+          <h4 className="text-base font-bold text-slate-900 tracking-tight leading-tight mb-1.5">{title}</h4>
+          <p className="text-xs font-semibold text-slate-400 leading-normal mb-4">{desc}</p>
+          <div className="flex items-center gap-1 text-xs font-semibold text-brand transition-colors hover:text-brand-deep">
+             <span>{status}</span>
+             <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
           </div>
        </div>
-    </motion.div>
+    </div>
   );
 }
 
 function StatCard({ label, value, icon: Icon, color, description, badge }: any) {
+  const { t } = useLanguage();
   return (
-    <motion.div 
-      whileHover={{ scale: 1.02 }}
-      className="premium-card p-12 md:p-16 flex flex-col justify-between h-full group overflow-hidden relative border-4 border-white bg-white/40 backdrop-blur-3xl shadow-2xl rounded-[64px]"
-    >
-      <div className="absolute -top-16 -right-16 w-64 h-64 bg-brand/5 rounded-full blur-[80px] group-hover:bg-brand/10 transition-all duration-1000" />
-      <div className="flex items-center justify-between mb-16">
-        <div className={`w-24 h-24 rounded-[32px] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-all duration-700 ${color} bg-white/60 border border-white`}>
-          <Icon className="w-12 h-12 group-hover:rotate-12 transition-transform duration-700" />
+    <div className="premium-card p-6 bg-white rounded-xl border border-[#EAEFED] shadow-soft flex flex-col justify-between h-full relative overflow-hidden group">
+      <div className="absolute top-0 right-0 w-48 h-48 bg-brand/5 rounded-full blur-2xl pointer-events-none" />
+      <div className="flex items-center justify-between mb-8 pr-1">
+        <div className={`w-12 h-12 rounded-lg flex items-center justify-center border border-[#EAEFED] ${color}`}>
+          <Icon className="w-5 h-5" />
         </div>
         {badge && (
-          <div className="px-6 py-2 bg-brand text-white text-[10px] font-black uppercase tracking-[0.4em] rounded-full shadow-lg border-2 border-white/20">
+          <div className="px-2.5 py-1 bg-brand/10 text-brand text-[9.5px] font-bold uppercase tracking-wider rounded-md">
             {badge}
           </div>
         )}
       </div>
       <div>
-        <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.5em] mb-6 block">{label}</span>
-        <div className="flex items-baseline gap-6 mb-6">
-          <p className="text-7xl md:text-8xl font-black text-deep-green tracking-tighter leading-none">{value}</p>
-          <span className="text-2xl font-black text-slate-300 tracking-tighter">Units.</span>
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">{label}</span>
+        <div className="flex items-baseline gap-2 mb-3">
+          <p className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight leading-none">{value}</p>
+          <span className="text-xs font-semibold text-slate-400">{t('records')}</span>
         </div>
-        <p className="text-sm font-bold text-slate-400 leading-relaxed uppercase tracking-[0.2em] max-w-xs">{description}</p>
+        <p className="text-xs font-semibold text-slate-400 leading-relaxed uppercase tracking-wider">{description}</p>
       </div>
-    </motion.div>
+    </div>
   );
 }
