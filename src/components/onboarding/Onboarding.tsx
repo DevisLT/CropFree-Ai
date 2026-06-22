@@ -1,19 +1,116 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Leaf, Shield, Zap, CloudOff, ArrowRight, CheckCircle, Sparkles, Globe, Activity, Camera } from "lucide-react";
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../../lib/firebase";
+import { Leaf, Shield, Zap, CloudOff, ArrowRight, CheckCircle, Sparkles, Globe, Activity, Camera, Phone, Key, RefreshCw } from "lucide-react";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "../../lib/firebase";
 import { useLanguage, supportedLanguages } from "../../contexts/LanguageContext";
+import toast from "react-hot-toast";
 
 export default function Onboarding() {
   const { locale, setLocale, t } = useLanguage();
   const [step, setStep] = useState(0);
+  const [phoneNumber, setPhoneNumber] = useState("+250");
+  const [verificationCode, setVerificationCode] = useState("");
+  const [smsSent, setSmsSent] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [isVerifyingCode, setIsVerifyingCode] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [confirmationResult, setConfirmationResult] = useState<any>(null);
 
-  const handleLogin = async () => {
+  // Set up invisible reCAPTCHA verifier
+  const initRecaptchaVerifier = () => {
+    setErrorMsg("");
     try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error("Login failed", error);
+      if ((window as any).recaptchaVerifier) {
+        return (window as any).recaptchaVerifier;
+      }
+      const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+        size: "invisible",
+        callback: (response: any) => {
+          // reCAPTCHA solved
+        },
+        "expired-callback": () => {
+          setErrorMsg(t('recaptcha_expired') || "reCAPTCHA expired. Please request the code again.");
+        }
+      });
+      (window as any).recaptchaVerifier = verifier;
+      return verifier;
+    } catch (error: any) {
+      console.error("reCAPTCHA creation failed", error);
+      setErrorMsg(t('recaptcha_failed') || "Failed to initialize security verifier.");
+      return null;
+    }
+  };
+
+  const handleSendCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg("");
+    if (!phoneNumber || phoneNumber.trim() === "+" || phoneNumber.trim().length < 6) {
+      setErrorMsg(t('phone_required') || "Please enter a valid phone number including country code (e.g., +250 788 000 000)");
+      return;
+    }
+    
+    setIsSendingCode(true);
+    try {
+      const verifier = initRecaptchaVerifier();
+      if (!verifier) {
+        setIsSendingCode(false);
+        return;
+      }
+      
+      const formattedNum = phoneNumber.trim();
+      const result = await signInWithPhoneNumber(auth, formattedNum, verifier);
+      setConfirmationResult(result);
+      setSmsSent(true);
+      toast.success(t('verification_sent') || "Verification code dispatched via SMS!");
+    } catch (error: any) {
+      console.error("SMS Dispatch failed", error);
+      if (error.code === "auth/invalid-phone-number") {
+        setErrorMsg(t('invalid_phone_format') || "The phone number format is invalid. Ensure you start with + followed by country code.");
+      } else if (error.code === "auth/too-many-requests") {
+        setErrorMsg(t('too_many_sms_requests') || "Too many SMS requests. Please wait a moment or use test credentials.");
+      } else {
+        setErrorMsg(error.message || "Failed to dispatch SMS verification code.");
+      }
+      // Clean reCAPTCHA in case of failure so it can re-draw
+      if ((window as any).recaptchaVerifier) {
+        try {
+          (window as any).recaptchaVerifier.clear();
+        } catch (clearErr) {
+          console.warn("reCAPTCHA clear failed", clearErr);
+        }
+        (window as any).recaptchaVerifier = undefined;
+      }
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg("");
+    if (!verificationCode || verificationCode.trim().length !== 6) {
+      setErrorMsg(t('code_6_digits') || "SMS code must be exactly 6 digits.");
+      return;
+    }
+    if (!confirmationResult) {
+      setErrorMsg(t('no_confirmation_state') || "No active verification state. Please send the code again.");
+      return;
+    }
+
+    setIsVerifyingCode(true);
+    try {
+      await confirmationResult.confirm(verificationCode.trim());
+      toast.success(t('signin_success') || "Successfully verified! Logging into your dashboard...");
+    } catch (error: any) {
+      console.error("Verification confirmation failed", error);
+      if (error.code === "auth/invalid-verification-code") {
+        setErrorMsg(t('invalid_sms_code') || "The verification code is incorrect or expired.");
+      } else {
+        setErrorMsg(error.message || "Verification code matching failed.");
+      }
+    } finally {
+      setIsVerifyingCode(false);
     }
   };
 
@@ -171,26 +268,156 @@ export default function Onboarding() {
               key="auth"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-16 text-center rounded-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white"
+              className="w-full bg-white/95 backdrop-blur-2xl p-8 md:p-14 text-center rounded-none shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white space-y-6"
             >
-              <div className="w-20 h-20 bg-slate-50 rounded-none flex items-center justify-center mx-auto mb-8 shadow-inner border border-slate-100 rotate-3 animate-bounce">
-                 <Shield className="w-10 h-10 text-brand" />
+              {/* Hidden reCAPTCHA anchor */}
+              <div id="recaptcha-container" className="hidden"></div>
+
+              <div className="w-16 h-16 bg-slate-50 rounded-none flex items-center justify-center mx-auto shadow-inner border border-slate-100 rotate-3">
+                 <Shield className="w-8 h-8 text-brand animate-pulse" />
               </div>
-              <h2 className="text-5xl font-black text-slate-950 mb-4 tracking-tighter">{t('onboarding_secure_field_lbl') || "Secure Field."}</h2>
-              <p className="text-slate-500 text-lg font-semibold mb-12 leading-relaxed max-w-xs mx-auto">
-                {t('onboarding_secure_field_desc') || "Verify your identity to unlock personalized monitoring and premium access."}
-              </p>
+
+              {!smsSent ? (
+                <form onSubmit={handleSendCode} className="space-y-6 text-left">
+                  <div className="text-center md:text-left space-y-2">
+                    <h2 className="text-4xl font-black text-slate-950 tracking-tighter uppercase">
+                      {t('onboarding_secure_field_lbl') || "Secure Field."}
+                    </h2>
+                    <p className="text-slate-500 text-sm font-semibold leading-relaxed">
+                      {t('phone_auth_instructions') || "Enter your telephone number to receive an SMS verification code for instant dashboard access."}
+                    </p>
+                  </div>
+
+                  {errorMsg && (
+                    <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold leading-relaxed flex items-start gap-3">
+                      <Shield className="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" />
+                      <span>{errorMsg}</span>
+                    </div>
+                  )}
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black uppercase tracking-wider text-slate-450 block">
+                      {t('telephone_number') || "Telephone Number"}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 font-mono text-sm">
+                        <Phone className="w-4 h-4 text-brand" />
+                      </div>
+                      <input
+                        type="tel"
+                        required
+                        value={phoneNumber}
+                        onChange={(e) => {
+                          setPhoneNumber(e.target.value);
+                          setErrorMsg("");
+                        }}
+                        placeholder="+250 788 000 000"
+                        className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-none pl-11 pr-4 py-4 focus:ring-1 focus:ring-brand focus:border-brand font-mono text-base font-black outline-none transition-all"
+                      />
+                    </div>
+                    <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
+                      {t('phone_format_hint') || "Standard international format starting with country prefix (e.g. +250 or +1)."}
+                    </p>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSendingCode}
+                    className="w-full py-5 bg-slate-950 text-white rounded-none font-black flex items-center justify-center gap-4 hover:bg-brand hover:text-slate-950 transition-all group disabled:opacity-50 disabled:pointer-events-none uppercase tracking-widest text-[11px]"
+                  >
+                    {isSendingCode ? (
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Phone className="w-4 h-4 group-hover:scale-110 transition-transform text-brand" />
+                    )}
+                    {isSendingCode ? "Dispatching SMS..." : (t('send_sms_btn') || "Send Verification Code")}
+                  </button>
+
+                  {/* Dev Sandbox Guide */}
+                  <div className="p-4 bg-slate-50 border border-slate-100 rounded-none text-left text-[11px] leading-relaxed select-all space-y-1">
+                    <span className="font-extrabold text-slate-700 block text-[10px] uppercase tracking-wider">
+                      💡 Developer Sandbox Access:
+                    </span>
+                    <p className="text-slate-500 font-semibold">
+                      For instant local review inside the web sandbox, you can authenticate using our configured test lines:
+                    </p>
+                    <div className="font-mono mt-2 pt-2 border-t border-slate-200/60 flex justify-between text-slate-750 font-bold">
+                      <span>Phone: <b className="text-brand font-black">+1 650-555-3434</b></span>
+                      <span>Code: <b className="text-slate-950 font-black">123456</b></span>
+                    </div>
+                  </div>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyCode} className="space-y-6 text-left">
+                  <div className="text-center md:text-left space-y-2">
+                    <h2 className="text-4xl font-black text-slate-950 tracking-tighter uppercase">
+                      {t('enter_sms_code') || "Enter Code."}
+                    </h2>
+                    <p className="text-slate-500 text-sm font-semibold leading-relaxed">
+                      {t('sms_sent_to') || "SMS code has been dispatched. Enter the 6-digit verification code sent to:"} <strong className="text-slate-950 font-bold block mt-1 font-mono">{phoneNumber}</strong>
+                    </p>
+                  </div>
+
+                  {errorMsg && (
+                    <div className="p-4 bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold leading-relaxed flex items-start gap-3">
+                      <Shield className="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" />
+                      <span>{errorMsg}</span>
+                    </div>
+                  )}
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black uppercase tracking-wider text-slate-450 block">
+                      {t('sms_code_label') || "6-Digit SMS Verification Code"}
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Key className="w-4 h-4 text-brand" />
+                      </div>
+                      <input
+                        type="text"
+                        maxLength={6}
+                        required
+                        value={verificationCode}
+                        onChange={(e) => {
+                          setVerificationCode(e.target.value.replace(/[^0-9]/g, ""));
+                          setErrorMsg("");
+                        }}
+                        placeholder="123456"
+                        className="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-none pl-11 pr-4 py-4 focus:ring-1 focus:ring-brand focus:border-brand font-mono text-center text-xl tracking-[0.5em] font-black outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <button
+                      type="submit"
+                      disabled={isVerifyingCode}
+                      className="w-full py-5 bg-slate-950 text-white hover:bg-brand hover:text-slate-950 transition-all font-black flex items-center justify-center gap-4 group disabled:opacity-50 disabled:pointer-events-none uppercase tracking-widest text-[11px]"
+                    >
+                      {isVerifyingCode ? (
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <CheckCircle className="w-4 h-4 group-hover:scale-110 transition-transform text-brand" />
+                      )}
+                      {isVerifyingCode ? "Verifying Credentials..." : (t('verify_btn') || "Verify & Access Dashboard")}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSmsSent(false);
+                        setVerificationCode("");
+                        setErrorMsg("");
+                      }}
+                      className="w-full py-3 bg-white text-slate-500 border border-slate-200 hover:border-slate-300 rounded-none transition-all uppercase tracking-widest text-[9px] font-black"
+                    >
+                      {t('back_to_phone_btn') || "Change Phone Number"}
+                    </button>
+                  </div>
+                </form>
+              )}
               
-              <button
-                type="button"
-                onClick={handleLogin}
-                className="w-full py-5 bg-white border-2 border-slate-150 rounded-none font-black text-slate-950 flex items-center justify-center gap-4 hover:border-brand transition-all mb-8 group btn-press shadow-xl"
-              >
-                <img src="https://www.google.com/favicon.ico" className="w-6 h-6 group-hover:scale-125 transition-transform" alt="Google" referrerPolicy="no-referrer" />
-                {t('onboarding_google_signin') || "Sign in with Google"}
-              </button>
-              
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed pt-2">
                 <span>{t('onboarding_agreement_prefix')}<span className="text-slate-950 underline underline-offset-4 cursor-pointer">{t('onboarding_terms')}</span>{t('and')}<span className="text-slate-950 underline underline-offset-4 cursor-pointer">{t('onboarding_privacy')}</span>{t('onboarding_agreement_suffix')}</span>
               </p>
             </motion.div>

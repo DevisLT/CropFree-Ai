@@ -25,43 +25,46 @@ export default function Account() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-12 px-6 font-sans text-left space-y-16">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+    <div className="max-w-6xl mx-auto py-8 px-4 font-sans text-left space-y-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Profile Column */}
-        <div className="lg:col-span-1 space-y-16">
-          <div className="premium-card p-16 text-center rounded-[64px] border border-white bg-white/40 backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
-             <div className="absolute top-0 left-0 w-32 h-32 bg-brand/5 blur-[40px] pointer-events-none" />
-             <div className="w-40 h-40 bg-deep-green text-white rounded-[56px] flex items-center justify-center mx-auto mb-12 text-6xl font-black shadow-2xl group-hover:scale-110 transition-transform duration-1000 border-4 border-white">
-                {profile?.fullName ? profile.fullName[0] : <User className="w-16 h-16" />}
+        <div className="lg:col-span-1 space-y-8">
+          {/* Reduced Card: p-8 instead of p-16, rounded-[32px] for sleek footprint */}
+          <div className="premium-card p-8 text-center rounded-[32px] border border-slate-100 bg-white/40 backdrop-blur-3xl shadow-xl relative overflow-hidden group">
+             <div className="absolute top-0 left-0 w-24 h-24 bg-brand/5 blur-[30px] pointer-events-none" />
+             {/* Thinner border and compact size: w-24 h-24 instead of w-40 h-40 */}
+             <div className="w-24 h-24 bg-deep-green text-white rounded-[24px] flex items-center justify-center mx-auto mb-6 text-3xl font-black shadow-lg group-hover:scale-105 transition-transform duration-700 border-2 border-white">
+                {profile?.fullName ? profile.fullName[0] : <User className="w-10 h-10" />}
              </div>
-             <h3 className="text-4xl font-black text-deep-green tracking-tighter">{profile?.fullName}</h3>
-             <p className="text-sm font-bold text-slate-400 mt-4 mb-14 uppercase tracking-[0.4em]">{profile?.email}</p>
+             <h3 className="text-2xl font-black text-deep-green tracking-tight">{profile?.fullName}</h3>
+             <p className="text-xs font-bold text-slate-400 mt-2 mb-8 uppercase tracking-[0.2em]">{profile?.email}</p>
              
-             <div className="pt-12 border-t border-slate-100 flex flex-col items-center gap-8">
-                  <span className="text-[11px] font-black uppercase tracking-[0.6em] text-slate-300 block">{t('biological_status')}</span>
-                  <div className={`px-12 py-4 rounded-full text-[12px] font-black uppercase tracking-[0.3em] shadow-xl border-2 ${isTrialExpired ? 'bg-rose-500 text-white border-rose-600' : 'bg-brand text-white border-brand-dark'}`}>
+             <div className="pt-6 border-t border-slate-100 flex flex-col items-center gap-4">
+                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 block">{t('biological_status')}</span>
+                  <div className={`px-6 py-2 rounded-full text-[11px] font-black uppercase tracking-[0.2em] shadow-md border-2 ${isTrialExpired ? 'bg-rose-500 text-white border-rose-600' : 'bg-brand text-white border-brand-dark'}`}>
                      {profile?.subscriptionStatus === "trial" ? t('trial_plan') : t('supreme_plan')}
                   </div>
              </div>
           </div>
 
-          <div className="premium-card p-12 md:p-16 rounded-[48px] bg-white/40 border border-white shadow-2xl backdrop-blur-3xl">
-              <div className="flex items-center gap-6 mb-12">
-                 <Layout className="w-6 h-6 text-brand" />
-                 <h4 className="text-[12px] font-black uppercase tracking-[0.6em] text-deep-green">{t('interface_protocols')}</h4>
+          {/* Interface Protocols: compact list row layout */}
+          <div className="premium-card p-6 rounded-[28px] bg-white/40 border border-slate-100 shadow-xl backdrop-blur-3xl">
+              <div className="flex items-center gap-4 mb-6">
+                 <Layout className="w-5 h-5 text-brand" />
+                 <h4 className="text-[11px] font-black uppercase tracking-[0.4em] text-deep-green">{t('interface_protocols')}</h4>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {[
                   { label: t('language'), value: t('locale') === 'rw' ? 'Ikinyarwanda' : 'English', icon: Globe },
                   { label: t('station_region'), value: t('global_ke'), icon: Globe }
                 ].map((item, i) => (
-                  <div key={i} className="w-full flex items-center justify-between p-8 bg-white/60 hover:bg-white rounded-[32px] transition-all duration-700 font-black text-xs uppercase tracking-widest text-slate-400 border border-slate-100 hover:border-brand shadow-sm">
-                      <div className="flex items-center gap-6">
-                        <item.icon className="w-5 h-5 opacity-40 text-brand" />
+                  <div key={i} className="w-full flex items-center justify-between p-4 bg-white/60 hover:bg-white rounded-[20px] transition-all duration-500 font-extrabold text-[11px] uppercase tracking-wider text-slate-450 border border-slate-100 hover:border-brand shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <item.icon className="w-4 h-4 opacity-40 text-brand" />
                         {item.label}
                       </div>
-                      <span className="text-brand flex items-center gap-4 text-xs font-bold leading-none">
+                      <span className="text-brand flex items-center gap-2 text-xs font-bold leading-none">
                         {item.value}
                       </span>
                   </div>
@@ -72,77 +75,82 @@ export default function Account() {
 
         {/* Subscription Column */}
         <div className="lg:col-span-2">
-            <div className="premium-card p-6 md:p-24 bg-deep-green text-white relative overflow-hidden rounded-[80px] border border-white/5 shadow-2xl group">
-               <div className="absolute top-0 right-0 w-[90%] h-full bg-brand/5 blur-[150px] pointer-events-none transition-all duration-[4s] group-hover:bg-brand/10" />
+            {/* Reduced card padding and rounded corners */}
+            <div className="premium-card p-6 md:p-12 bg-deep-green text-white relative overflow-hidden rounded-[40px] border border-white/5 shadow-xl group">
+               <div className="absolute top-0 right-0 w-[80%] h-full bg-brand/5 blur-[120px] pointer-events-none transition-all duration-[3s] group-hover:bg-brand/10" />
                
-               <div className="relative z-10">
-                 <div className="flex items-center gap-6 mb-10">
-                    <div className="h-[2px] w-16 bg-brand/30" />
-                    <span className="text-[12px] font-black uppercase tracking-[0.7em] text-brand">{t('strategic_aug')}</span>
+               <div className="relative z-10 text-left">
+                 <div className="flex items-center gap-4 mb-6">
+                    <div className="h-[2px] w-12 bg-brand/30" />
+                    <span className="text-[11px] font-black uppercase tracking-[0.4em] text-brand">{t('strategic_aug')}</span>
                  </div>
-                 <h2 className="text-5xl md:text-7xl lg:text-[6rem] font-black mb-12 tracking-tighter leading-none drop-shadow-xl uppercase">{t('supreme_tier')}</h2>
-                 <p className="text-white/60 mb-20 max-w-2xl text-xl md:text-2xl font-medium leading-relaxed">
+                 {/* Title resized to fit beautifully: text-3xl md:text-5xl */}
+                 <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight leading-none drop-shadow-lg uppercase">{t('supreme_tier')}</h2>
+                 {/* Reduced text sizes and spacing */}
+                 <p className="text-white/60 mb-8 max-w-2xl text-base md:text-lg font-medium leading-relaxed">
                    {t('supreme_tier_desc')}
                  </p>
 
-                 <div className="flex items-baseline gap-8 mb-24">
-                    <span className="text-6xl md:text-8xl lg:text-[10rem] font-black tracking-tighter text-white drop-shadow-2xl">$2.99</span>
-                    <div className="flex flex-col">
-                       <span className="text-slate-400 font-black uppercase tracking-[0.5em] text-sm md:text-lg">{t('per_binary_cycle') || "per binary cycle"}</span>
-                       <span className="text-brand font-black text-xs uppercase tracking-[0.3em] mt-2 shadow-glow">{t('limited_access') || "Limited Access."}</span>
+                 <div className="flex items-baseline gap-4 mb-10">
+                    <span className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-white drop-shadow-xl">$2.99</span>
+                    <div className="flex flex-col text-left">
+                       <span className="text-slate-400 font-black uppercase tracking-[0.3em] text-xs md:text-sm">{t('per_binary_cycle') || "per binary cycle"}</span>
+                       <span className="text-brand font-black text-[10px] uppercase tracking-[0.2em] mt-1 shadow-glow">{t('limited_access') || "Limited Access."}</span>
                     </div>
                  </div>
 
-                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24 bg-white/5 p-12 rounded-[64px] border border-white/5 backdrop-blur-3xl shadow-inner text-left">
+                 {/* Fully horizontal layout: cards are horizontal styled rows and compact */}
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10 bg-white/5 p-6 rounded-[28px] border border-white/5 backdrop-blur-3xl shadow-inner text-left">
                     <FeatureItem text={t('feature_unlimited_scans')} />
                     <FeatureItem text={t('feature_realtime_sync')} />
                     <FeatureItem text={t('feature_expert_uplink')} />
                     <FeatureItem text={t('feature_atmospheric')} />
                  </div>
 
-                 <div className="space-y-12 mb-20">
-                    <span className="text-[11px] font-black uppercase tracking-[0.6em] text-white/30 block mb-6 px-4">{t('currency_strategy')}</span>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                 <div className="space-y-6 mb-10">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 block mb-3 px-2">{t('currency_strategy')}</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                        <button 
                           onClick={() => setPaymentMethod("card")}
                           type="button"
-                          className={`p-12 rounded-[40px] border-4 flex items-center justify-center gap-8 transition-all duration-1000 relative overflow-hidden group ${
-                            paymentMethod === 'card' ? 'border-brand bg-brand text-deep-green shadow-2xl' : 'border-white/5 bg-white/5 text-white/40 hover:border-white/20'
+                          className={`p-6 rounded-[24px] border-2 flex items-center justify-center gap-4 transition-all duration-500 relative overflow-hidden group ${
+                            paymentMethod === 'card' ? 'border-brand bg-brand text-deep-green shadow-xl' : 'border-white/5 bg-white/5 text-white/40 hover:border-white/10'
                           }`}
                        >
-                          <CreditCard className={`w-12 h-12 ${paymentMethod === 'card' ? 'text-deep-green' : 'text-white/10'}`} />
-                          <span className="font-black text-sm uppercase tracking-[0.5em]">{t('global_credit')}</span>
+                          <CreditCard className={`w-8 h-8 ${paymentMethod === 'card' ? 'text-deep-green' : 'text-white/10'}`} />
+                          <span className="font-black text-xs uppercase tracking-[0.3em]">{t('global_credit')}</span>
                        </button>
                        <button 
                           onClick={() => setPaymentMethod("momo")}
                           type="button"
-                          className={`p-12 rounded-[40px] border-4 flex items-center justify-center gap-8 transition-all duration-1000 relative overflow-hidden group ${
-                            paymentMethod === 'momo' ? 'border-brand bg-brand text-deep-green shadow-2xl' : 'border-white/5 bg-white/5 text-white/40 hover:border-white/20'
+                          className={`p-6 rounded-[24px] border-2 flex items-center justify-center gap-4 transition-all duration-500 relative overflow-hidden group ${
+                            paymentMethod === 'momo' ? 'border-brand bg-brand text-deep-green shadow-xl' : 'border-white/5 bg-white/5 text-white/40 hover:border-white/10'
                           }`}
                        >
-                          <Smartphone className={`w-12 h-12 ${paymentMethod === 'momo' ? 'text-deep-green' : 'text-white/10'}`} />
-                          <span className="font-black text-sm uppercase tracking-[0.5em]">{t('mobile_logic')}</span>
+                          <Smartphone className={`w-8 h-8 ${paymentMethod === 'momo' ? 'text-deep-green' : 'text-white/10'}`} />
+                          <span className="font-black text-xs uppercase tracking-[0.3em]">{t('mobile_logic')}</span>
                        </button>
                     </div>
-                 </div>
+                  </div>
 
+                 {/* Compact button with moderate padding and crisp layout */}
                  <button 
                    onClick={handleSubscribe}
                    disabled={isProcessing}
                    type="button"
-                   className="w-full py-12 bg-white text-deep-green rounded-full font-black text-sm md:text-xl uppercase tracking-[0.5em] shadow-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-10 group relative overflow-hidden border-4 border-white hover:border-brand"
+                   className="w-full py-6 bg-white text-deep-green rounded-2xl font-black text-sm md:text-base uppercase tracking-[0.3em] shadow-xl hover:scale-103 active:scale-97 transition-all flex items-center justify-center gap-4 group relative overflow-hidden border-2 border-white hover:border-brand"
                  >
                    <div className="absolute inset-0 bg-brand opacity-0 group-hover:opacity-10 transition-opacity" />
                    {isProcessing ? t('sub_processing_btn') : t('init_sub_btn')} 
-                   {!isProcessing && <ArrowRight className="w-10 h-10 group-hover:translate-x-6 transition-all duration-1000 group-hover:scale-125 text-brand" />}
+                   {!isProcessing && <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-all duration-500 group-hover:scale-110 text-brand" />}
                  </button>
                  
-                 <div className="mt-20 flex items-center justify-center gap-12 sm:gap-24">
-                    <div className="flex items-center gap-6 text-[11px] font-black uppercase tracking-[0.6em] text-white/20">
-                       <ShieldCheck className="w-8 h-8 text-brand/30" /> {t('node_secured')}
+                 <div className="mt-10 flex items-center justify-center gap-8 sm:gap-16">
+                    <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-white/20">
+                       <ShieldCheck className="w-6 h-6 text-brand/30" /> {t('node_secured')}
                     </div>
-                    <div className="flex items-center gap-6 text-[11px] font-black uppercase tracking-[0.6em] text-white/20">
-                       <Clock className="w-8 h-8 text-brand/30" /> {t('twentyfour_seven_terminal')}
+                    <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-white/20">
+                       <Clock className="w-6 h-6 text-brand/30" /> {t('twentyfour_seven_terminal')}
                     </div>
                  </div>
                </div>
@@ -150,16 +158,16 @@ export default function Account() {
             
             {isTrialExpired && (
               <motion.div 
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-16 p-16 bg-rose-500/5 rounded-[64px] border-4 border-rose-500/20 flex flex-col md:flex-row items-center md:items-start gap-12 shadow-2xl backdrop-blur-3xl text-left"
+                className="mt-8 p-8 bg-rose-500/5 rounded-[32px] border-2 border-rose-500/10 flex flex-col md:flex-row items-center md:items-start gap-6 shadow-xl backdrop-blur-3xl text-left"
               >
-                  <div className="w-28 h-28 bg-rose-500/10 rounded-[40px] flex items-center justify-center flex-shrink-0 border-4 border-rose-500/20 animate-pulse shadow-xl">
-                    <Terminal className="w-14 h-14 text-rose-500" />
+                  <div className="w-16 h-16 bg-rose-500/10 rounded-[20px] flex items-center justify-center flex-shrink-0 border-2 border-rose-500/20 animate-pulse shadow-md">
+                    <Terminal className="w-8 h-8 text-rose-500" />
                   </div>
                   <div className="text-center md:text-left">
-                     <h5 className="text-white font-black text-4xl lg:text-6xl tracking-tighter mb-6 uppercase leading-none">{t('neural_link_severed')}</h5>
-                     <p className="text-white/40 text-xl lg:text-2xl font-medium leading-relaxed max-w-4xl">
+                     <h5 className="text-white font-black text-2xl lg:text-3xl tracking-tight mb-3 uppercase leading-none">{t('neural_link_severed')}</h5>
+                     <p className="text-white/40 text-base font-medium leading-relaxed max-w-4xl">
                        {t('trial_expired_desc_full')}
                      </p>
                   </div>
@@ -176,11 +184,11 @@ export default function Account() {
 
 function FeatureItem({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-8 group cursor-default text-left">
-      <div className="w-10 h-10 rounded-[18px] bg-brand/10 flex items-center justify-center border-2 border-brand/20 group-hover:bg-brand group-hover:scale-125 transition-all duration-700">
-         <CheckCircle className="w-6 h-6 text-brand group-hover:text-deep-green transition-colors" />
+    <div className="flex items-center gap-4 group cursor-default text-left">
+      <div className="w-8 h-8 rounded-[12px] bg-brand/10 flex items-center justify-center border border-brand/20 group-hover:bg-brand group-hover:scale-110 transition-all duration-500 flex-shrink-0">
+         <CheckCircle className="w-4 h-4 text-brand group-hover:text-deep-green transition-colors" />
       </div>
-      <span className="text-xl md:text-2xl font-black text-white/40 group-hover:text-white transition-all duration-700 tracking-tight">{text}</span>
+      <span className="text-sm md:text-base font-black text-white/40 group-hover:text-white transition-all duration-500 tracking-tight">{text}</span>
     </div>
   );
 }
